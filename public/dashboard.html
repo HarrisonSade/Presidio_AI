@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Presidio Investors - Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #0a0e27;
+            min-height: 100vh;
+            color: white;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(20, 25, 43, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(192, 93, 0, 0.2);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo {
+            height: 50px;
+            width: auto;
+            filter: brightness(0) invert(1);
+        }
+
+        .welcome-text {
+            font-size: 18px;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        .logout-btn {
+            background: transparent;
+            border: 1px solid rgba(192, 93, 0, 0.5);
+            color: #c05d00;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .logout-btn:hover {
+            background: rgba(192, 93, 0, 0.1);
+            border-color: #c05d00;
+            transform: translateY(-1px);
+        }
+
+        /* Main Content */
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 60px 30px;
+        }
+
+        .dashboard-title {
+            font-size: 36px;
+            font-weight: 300;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .dashboard-subtitle {
+            text-align: center;
+            color: #8892b0;
+            font-size: 16px;
+            margin-bottom: 60px;
+            letter-spacing: 1px;
+        }
+
+        /* App Grid */
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .app-card {
+            background: rgba(20, 25, 43, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(192, 93, 0, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .app-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at var(--mouse-x) var(--mouse-y), 
+                        rgba(192, 93, 0, 0.1) 0%, 
+                        transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .app-card:hover::before {
+            opacity: 1;
+        }
+
+        .app-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(192, 93, 0, 0.5);
+            box-shadow: 0 20px 40px rgba(192, 93, 0, 0.2);
+        }
+
+        .app-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+            display: block;
+            background: linear-gradient(135deg, #c05d00 0%, #ff7a00 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .app-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #ffffff;
+        }
+
+        .app-description {
+            color: #8892b0;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .app-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            background: rgba(192, 93, 0, 0.1);
+            border: 1px solid rgba(192, 93, 0, 0.3);
+            color: #c05d00;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #c05d00;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .coming-soon {
+            background: rgba(100, 100, 100, 0.1);
+            border-color: rgba(100, 100, 100, 0.3);
+            color: #666;
+        }
+
+        .coming-soon .status-dot {
+            background: #666;
+            animation: none;
+        }
+
+        /* Placeholder cards */
+        .placeholder-card {
+            background: rgba(20, 25, 43, 0.3);
+            border: 2px dashed rgba(100, 100, 100, 0.2);
+            cursor: default;
+            opacity: 0.5;
+        }
+
+        .placeholder-card:hover {
+            transform: none;
+            box-shadow: none;
+            border-color: rgba(100, 100, 100, 0.2);
+        }
+
+        .placeholder-icon {
+            color: #4a5568;
+            -webkit-text-fill-color: #4a5568;
+        }
+
+        .placeholder-title {
+            color: #4a5568;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px;
+            border-top: 1px solid rgba(192, 93, 0, 0.1);
+            margin-top: 100px;
+        }
+
+        .footer-text {
+            color: #4a5568;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .apps-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-title {
+                font-size: 28px;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+
+        /* Loading animation */
+        .apps-grid {
+            opacity: 0;
+            animation: fadeInUp 0.8s ease forwards 0.2s;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo-section">
+                <img src="presidio-logo.png" alt="Presidio Investors" class="logo">
+                <span class="welcome-text">Intelligence Platform</span>
+            </div>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <div class="dashboard-container">
+        <h1 class="dashboard-title">INVESTMENT INTELLIGENCE SUITE</h1>
+        <p class="dashboard-subtitle">Select an application</p>
+
+        <div class="apps-grid">
+            <!-- Investor Primer App -->
+            <div class="app-card" onclick="navigateToApp('/primer')">
+                <h2 class="app-title">Investor Meeting Primer</h2>
+                <p class="app-description">Generate comprehensive research and talking points for investor meetings with AI-powered intelligence gathering.</p>
+                <span class="app-status">
+                    <span class="status-dot"></span>
+                    Active
+                </span>
+            </div>
+
+            <!-- CIM Summary App -->
+            <div class="app-card" onclick="navigateToApp('/ic-summary')">
+                <h2 class="app-title">IC Summary Generator</h2>
+                <p class="app-description">Upload CIM and automatically generate executive summaries with key insights.</p>
+                <span class="app-status">
+                    <span class="status-dot"></span>
+                    Active
+                </span>
+            </div>
+
+            <!-- PDF to Podcast App -->
+            <div class="app-card" onclick="navigateToApp('/podcast')">
+                <h2 class="app-title">PDF to Podcast</h2>
+                <p class="app-description">Upload foreign documents to translate, summarize, and convert into an informational podcast using AI.</p>
+                <span class="app-status">
+                    <span class="status-dot"></span>
+                    Active
+                </span>
+            </div>
+
+            <!-- Banker CIM Questions -->
+            <div class="app-card" onclick="navigateToApp('/bankerQuestions')">
+                <h2 class="app-title">Banker Questions</h2>
+                <p class="app-description">Upload a CIM and generate a list of meaningful questions to ask bankers.</p>
+                <span class="app-status">
+                    <span class="status-dot"></span>
+                    Active
+                </span>
+            </div>
+            <!-- Contract Waterfall -->
+            <div class="app-card" onclick="navigateToApp('/contractWaterfall')">
+                <h2 class="app-title">Contract Waterfall</h2>
+                <p class="app-description">Upload multiple contracts and extract custom metrics into a structured table format.</p>
+                <span class="app-status">
+                    <span class="status-dot"></span>
+                    Active
+                </span>
+            </div>
+
+            <!-- NDA Review App -->
+            <div class="app-card" onclick="navigateToApp('/NDAReview')">
+                <h2 class="app-title">NDA Review</h2>
+                <p class="app-description">Use AI to ensure legal documents are at standard rate.</p>
+                <span class="app-status">
+                    <span class="status-dot"></span>
+                    Active
+                </span>
+            </div>
+            <!-- Placeholder App 2 -->
+            <div class="app-card placeholder-card">
+                <h2 class="app-title placeholder-title">Call Transcript Insights</h2>
+                <p class="app-description">Database for past and present calls </p>
+                <span class="app-status">
+                    <span class="status-dot"></span>
+                    Coming Soon
+                </span>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="footer">
+        <p class="footer-text">© 2025 Presidio Investors. All rights reserved.</p>
+    </div>
+
+    <script>
+        // Check authentication
+        if (sessionStorage.getItem('presidio_authenticated') !== 'true') {
+            window.location.href = '/';
+        }
+
+        function logout() {
+            sessionStorage.removeItem('presidio_authenticated');
+            window.location.href = '/';
+        }
+
+        function navigateToApp(path) {
+            window.location.href = path;
+        }
+
+        // Add mouse tracking effect for cards
+        document.querySelectorAll('.app-card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+    </script>
+</body>
+</html>

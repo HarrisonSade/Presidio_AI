@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Presidio Investor Primer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+            color: #2c3e50;
+        }
+        
+        .header {
+            background: white;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+            padding: 20px 0;
+            margin-bottom: 40px;
+        }
+        
+        .header-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .logo {
+            height: 60px;
+            width: auto;
+        }
+        
+        .tagline {
+            color: #6c757d;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px 40px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.08);
+            padding: 40px;
+            margin-bottom: 30px;
+            transition: transform 0.2s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 40px rgba(0,0,0,0.12);
+        }
+        
+        h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #2d4059;
+            margin-bottom: 10px;
+        }
+        
+        h2 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #2d4059;
+            margin-bottom: 20px;
+        }
+        
+        .subtitle {
+            color: #6c757d;
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #2d4059;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background-color: #f8f9fa;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #c05d00;
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(192, 93, 0, 0.1);
+        }
+        
+        input::placeholder {
+            color: #adb5bd;
+        }
+        
+        .button-container {
+            display: flex;
+            gap: 15px;
+            margin-top: 35px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 16px 32px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .primary-btn {
+            background: linear-gradient(135deg, #c05d00 0%, #8b4300 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(192, 93, 0, 0.3);
+        }
+        
+        .primary-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(192, 93, 0, 0.4);
+        }
+        
+        .primary-btn:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        
+        .secondary-btn {
+            background: #f8f9fa;
+            color: #495057;
+            border: 2px solid #dee2e6;
+        }
+        
+        .secondary-btn:hover {
+            background: #e9ecef;
+            border-color: #cbd5e0;
+        }
+        
+        #result {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .result-title {
+            font-size: 26px;
+            font-weight: 700;
+            color: #2d4059;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .icon-btn {
+            padding: 10px 18px;
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #495057;
+        }
+        
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            color: #495057;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .back-btn:hover {
+            background: #e9ecef;
+            border-color: #cbd5e0;
+            transform: translateX(-2px);
+        }
+        
+        .icon-btn:hover {
+            background: #e9ecef;
+            border-color: #cbd5e0;
+            transform: translateY(-1px);
+        }
+        
+        .primer-content {
+            background-color: #f8f9fa;
+            border-radius: 12px;
+            padding: 30px;
+            white-space: pre-wrap;
+            line-height: 1.8;
+            font-size: 16px;
+            color: #2c3e50;
+        }
+        
+        .primer-content h3 {
+            color: #2d4059;
+            font-size: 20px;
+            font-weight: 600;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .primer-content h3:first-child {
+            margin-top: 0;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 60px;
+        }
+        
+        .spinner {
+            border: 3px solid #e9ecef;
+            border-radius: 50%;
+            border-top: 3px solid #c05d00;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            color: #6c757d;
+            font-size: 18px;
+            font-weight: 500;
+        }
+        
+        .error {
+            background: #fee;
+            color: #c33;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #c33;
+        }
+        
+        .success-toast {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: #28a745;
+            color: white;
+            padding: 16px 24px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(40, 167, 69, 0.3);
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .success-toast.show {
+            transform: translateX(0);
+        }
+        
+        /* History styles */
+        .history-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+        
+        .history-item:hover {
+            background-color: #e9ecef;
+            transform: translateX(5px);
+            border-color: #c05d00;
+        }
+        
+        .history-date {
+            font-size: 12px;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+        
+        .history-title {
+            font-weight: 600;
+            color: #2d4059;
+        }
+        
+        .history-product {
+            font-size: 14px;
+            color: #6c757d;
+            margin-top: 3px;
+        }
+        
+        .no-history {
+            text-align: center;
+            color: #6c757d;
+            padding: 40px;
+            font-style: italic;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .card {
+                padding: 25px;
+            }
+            
+            h1 {
+                font-size: 26px;
+            }
+            
+            .button-container {
+                flex-direction: column;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .icon-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo-section">
+                <img src="presidio-logo.png" alt="Presidio Investors" class="logo">
+            </div>
+            <a href="/dashboard.html" class="back-btn">
+                ← Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <h1>Investor Meeting Primer</h1>
+            <p class="subtitle">Generate comprehensive research and talking points in seconds</p>
+            
+            <form id="primerForm">
+                <div class="form-group">
+                    <label>Investor Name(s)</label>
+                    <input type="text" id="names" placeholder="e.g., John Smith, Jane Doe" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Investment Firm</label>
+                    <input type="text" id="company" placeholder="e.g., Sequoia Capital, Andreessen Horowitz" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Product / Investment Opportunity</label>
+                    <input type="text" id="product" placeholder="e.g., Fund 3, Hellas Verona, Series B Co-investment" required>
+                </div>
+                
+                <div class="button-container">
+                    <button type="submit" class="primary-btn" id="generateBtn">
+                        Generate Primer
+                    </button>
+                    <button type="button" class="secondary-btn" onclick="clearForm()">
+                        Clear Form
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <div class="card" id="result">
+            <div class="result-header">
+                <h2 class="result-title">Meeting Intelligence Report</h2>
+                <div class="action-buttons">
+                    <button class="icon-btn" onclick="copyToClipboard()">
+                        📋 Copy
+                    </button>
+                    <button class="icon-btn" onclick="downloadAsText()">
+                        💾 Download
+                    </button>
+                    <button class="icon-btn" onclick="copyForExcel()">
+                        📊 Excel
+                    </button>
+                </div>
+            </div>
+            <div class="primer-content" id="primerContent"></div>
+        </div>
+        
+        <div class="card" id="historySection">
+            <h2>Recent Primers</h2>
+            <div id="historyList">
+                <div class="no-history">No history yet - generate your first primer above!</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="success-toast" id="successToast">
+        ✓ Copied to clipboard
+    </div>
+    if (sessionStorage.getItem('presidio_authenticated') !== 'true') {
+        window.location.href = '/';
+    }f
+    <script>
+        // Load history on page load
+        window.addEventListener('load', loadHistory);
+
+        async function loadHistory() {
+            try {
+                const response = await fetch('/api/history');
+                const history = await response.json();
+                
+                const historyList = document.getElementById('historyList');
+                if (history.length === 0) {
+                    historyList.innerHTML = '<div class="no-history">No history yet - generate your first primer above!</div>';
+                    return;
+                }
+                
+                historyList.innerHTML = history.slice(0, 10).map(item => `
+                    <div class="history-item" onclick="loadHistoryItem('${item.id}')">
+                        <div class="history-date">${new Date(item.date).toLocaleString()}</div>
+                        <div class="history-title">${item.names} - ${item.company}</div>
+                        <div class="history-product">Pitching: ${item.product}</div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading history:', error);
+            }
+        }
+
+        async function loadHistoryItem(id) {
+            try {
+                const response = await fetch(`/api/history/${id}`);
+                const item = await response.json();
+                
+                // Populate form
+                document.getElementById('names').value = item.names;
+                document.getElementById('company').value = item.company;
+                document.getElementById('product').value = item.product;
+                
+                // Show result
+                document.getElementById('result').style.display = 'block';
+                document.getElementById('primerContent').innerHTML = formatPrimer(item.primer);
+                
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                
+                showToast('✓ Loaded from history');
+            } catch (error) {
+                console.error('Error loading history item:', error);
+                showToast('❌ Error loading history');
+            }
+        }
+
+        async function generatePrimer() {
+            const names = document.getElementById('names').value.trim();
+            const company = document.getElementById('company').value.trim();
+            const product = document.getElementById('product').value.trim();
+            
+            if (!names || !company || !product) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            const button = document.getElementById('generateBtn');
+            const resultDiv = document.getElementById('result');
+            const primerContent = document.getElementById('primerContent');
+            
+            button.disabled = true;
+            button.textContent = 'Generating Intelligence...';
+            resultDiv.style.display = 'block';
+            primerContent.innerHTML = '<div class="loading"><div class="spinner"></div><div class="loading-text">Researching and analyzing...</div></div>';
+            
+            try {
+                const response = await fetch('/api/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        names,
+                        company,
+                        product
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    primerContent.innerHTML = `<div class="error"><strong>Error:</strong> ${data.error}</div>`;
+                } else {
+                    primerContent.innerHTML = formatPrimer(data.primer);
+                    // Reload history after successful generation
+                    await loadHistory();
+                }
+                
+            } catch (error) {
+                primerContent.innerHTML = `<div class="error"><strong>Connection Error:</strong> ${error.message}</div>`;
+            } finally {
+                button.disabled = false;
+                button.textContent = 'Generate Primer';
+            }
+        }
+        
+        function formatPrimer(text) {
+            // Convert markdown headers to HTML
+            return text
+                .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+                .replace(/### /g, '<h3>')
+                .replace(/\n/g, '<br>')
+                .replace(/<br><h3>/g, '<h3>');
+        }
+        
+        function clearForm() {
+            document.getElementById('primerForm').reset();
+            document.getElementById('result').style.display = 'none';
+        }
+        
+        function showToast(message) {
+            const toast = document.getElementById('successToast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        function copyToClipboard() {
+            const text = document.getElementById('primerContent').innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('✓ Copied to clipboard');
+            }).catch(err => {
+                // Fallback
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showToast('✓ Copied to clipboard');
+            });
+        }
+        
+        function copyForExcel() {
+            const content = document.getElementById('primerContent').innerText;
+            const names = document.getElementById('names').value;
+            const company = document.getElementById('company').value;
+            const product = document.getElementById('product').value;
+            const date = new Date().toLocaleDateString();
+            
+            const excelContent = `${date}\t${names}\t${company}\t${product}\t${content.replace(/\n/g, ' ')}`;
+            
+            navigator.clipboard.writeText(excelContent).then(() => {
+                showToast('✓ Copied for Excel - paste into spreadsheet');
+            });
+        }
+        
+        function downloadAsText() {
+            const content = document.getElementById('primerContent').innerText;
+            const names = document.getElementById('names').value;
+            const company = document.getElementById('company').value;
+            const date = new Date().toISOString().split('T')[0];
+            
+            const fullContent = `PRESIDIO INVESTORS - MEETING INTELLIGENCE REPORT
+Generated: ${new Date().toLocaleString()}
+Meeting with: ${names}
+Company: ${company}
+
+${content}`;
+            
+            const blob = new Blob([fullContent], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `presidio_primer_${company.replace(/\s+/g, '_')}_${date}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+            
+            showToast('✓ Downloaded successfully');
+        }
+        
+        // Form submission
+        document.getElementById('primerForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            generatePrimer();
+        });
+        
+        // Enter key support
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    generatePrimer();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

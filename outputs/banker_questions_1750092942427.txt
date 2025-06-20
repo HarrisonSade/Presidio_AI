@@ -1,0 +1,54 @@
+Banker Questions Generated from CIM
+Generated on: 2025-06-16T16:55:42.427Z
+Original file: TurboPassIntroDeck.pdf
+=====================================
+
+1. What explains the significant jump from $14M to $66M revenue between 2025 and 2034? Please provide detailed assumptions and milestones for this 4.7x growth projection.
+
+2. Why is there a $0.9M difference between reported EBITDA ($7.4M) and Pro Forma EBITDA ($8.3M)? What adjustments or one-time items are being normalized?
+
+3. What is the actual cash burn rate given the negative working capital model, and how does this reconcile with being EBITDA positive since Q1 2024?
+
+4. Can you provide monthly cohort revenue retention data for the past 24 months to validate the implied low churn rates?
+
+5. What percentage of the 10,000+ dealerships are actually paying customers versus free trial or inactive accounts?
+
+6. Given 60%+ of customers come through DealerCenter, what are the specific terms, exclusivity provisions, and renewal dates of this partnership agreement?
+
+7. What happens to verification requests when automated data sources fail? What percentage require manual fallback and what is the cost/time impact?
+
+8. How do you prevent lenders from disintermediating TurboPass once they see the value and building direct integrations with your data suppliers?
+
+9. What is the average revenue per dealer, and how does this vary between franchise dealers, independent dealers, and those acquired through DealerCenter?
+
+10. Have any major lenders (Wells Fargo, Chase, Bank of America) explicitly decided not to adopt TurboPass? If so, why?
+
+11. What specific technical or business model barriers prevent competitors like Equifax, Experian, or existing DMS providers from replicating your solution?
+
+12. How sticky is the dealer relationship really - what would it take for a dealer to switch to a competitive solution?
+
+13. What is Westlake Financial's strategic intent as your largest shareholder? Do they have board control or any special rights that could impact an acquisition?
+
+14. Have you validated the expansion TAM estimates for RV/Marine ($118M), Personal Loans ($84M), and Property Rental ($314M) with actual pilot customers?
+
+15. What percentage of your data supplier contracts have "change of control" provisions that could be triggered by an acquisition?
+
+16. Do you own the core verification technology IP, or are there any critical components licensed from third parties?
+
+17. What is your disaster recovery plan if Plaid, MX, or Truv experience extended outages? Do you have redundant data sources for critical verifications?
+
+18. Have you experienced any data breaches or security incidents? What is your cyber insurance coverage?
+
+19. Can you provide specific examples of the claimed 8% loan loss reduction and 13% dealer cost decrease with named reference customers?
+
+20. What percentage of verification requests result in loan application denials? How might this impact dealer satisfaction if rates increase?
+
+21. How are you preparing for the potential shift to direct-to-consumer auto sales models that could bypass dealers entirely?
+
+22. Which states require specific licensing for your activities, and are there any states where you cannot currently operate?
+
+23. Have you received any regulatory inquiries or warnings regarding data privacy, fair lending practices, or consumer protection?
+
+24. What representations and warranties would you be willing to provide regarding compliance with FCRA, GLBA, and state privacy laws?
+
+25. Would existing investors, particularly Westlake Financial, be rolling equity or fully exiting? What are their expectations on valuation?

@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NDA Review - Presidio Investors</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #0a0e27;
+            min-height: 100vh;
+            color: white;
+        }
+        .header {
+            background: rgba(20, 25, 43, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(192, 93, 0, 0.2);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            height: 40px;
+            width: auto;
+            filter: brightness(0) invert(1);
+        }
+        .back-btn {
+            background: transparent;
+            border: 1px solid rgba(192, 93, 0, 0.5);
+            color: #c05d00;
+            padding: 10px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .back-btn:hover {
+            background: rgba(192, 93, 0, 0.1);
+            border-color: #c05d00;
+            transform: translateY(-1px);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 30px;
+        }
+        .card {
+            background: rgba(20, 25, 43, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(192, 93, 0, 0.2);
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            animation: fadeInUp 0.8s ease forwards 0.2s;
+            margin-bottom: 30px;
+        }
+        h1 {
+            font-size: 36px;
+            font-weight: 300;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            text-align: center;
+            background: linear-gradient(135deg, #ffffff 0%, #c05d00 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .subtitle {
+            text-align: center;
+            color: #8892b0;
+            font-size: 16px;
+            margin-bottom: 50px;
+            letter-spacing: 1px;
+        }
+        .upload-area {
+            border: 2px dashed rgba(192, 93, 0, 0.3);
+            border-radius: 20px;
+            padding: 60px 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.02);
+            margin-bottom: 30px;
+        }
+        .upload-area:hover {
+            border-color: rgba(192, 93, 0, 0.6);
+            background: rgba(192, 93, 0, 0.05);
+            transform: translateY(-2px);
+        }
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+            opacity: 0.7;
+        }
+        .upload-title {
+            font-size: 24px;
+            font-weight: 500;
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
+        .upload-subtitle {
+            color: #8892b0;
+            font-size: 16px;
+            margin-bottom: 25px;
+        }
+        .file-input {
+            display: none;
+        }
+        .browse-btn {
+            background: linear-gradient(135deg, #c05d00 0%, #ff7a00 100%);
+            border: none;
+            padding: 12px 30px;
+            color: white;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            display: inline-block;
+            box-shadow: 0 10px 30px rgba(192, 93, 0, 0.3);
+        }
+        .browse-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(192, 93, 0, 0.4);
+        }
+        .file-preview {
+            display: none;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(192, 93, 0, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .file-details h3 {
+            color: #ffffff;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        .file-details p {
+            color: #8892b0;
+            font-size: 14px;
+        }
+        .remove-btn {
+            background: transparent;
+            border: 1px solid rgba(220, 53, 69, 0.5);
+            color: #ff6b6b;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            margin-left: auto;
+            transition: all 0.3s ease;
+        }
+        .remove-btn:hover {
+            background: rgba(220, 53, 69, 0.1);
+            border-color: #ff6b6b;
+        }
+        .review-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #c05d00 0%, #ff7a00 100%);
+            border: none;
+            padding: 18px;
+            color: white;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(192, 93, 0, 0.3);
+            margin-bottom: 30px;
+        }
+        .review-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(192, 93, 0, 0.4);
+        }
+        .review-btn:disabled {
+            background: #4a5568;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        .status {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .spinner {
+            border: 3px solid rgba(192, 93, 0, 0.3);
+            border-top: 3px solid #c05d00;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        .output {
+            display: none;
+        }
+        .output.show {
+            display: block;
+        }
+
+        /* Enhanced styles for structured output */
+        .risk-overview {
+            background: rgba(20, 25, 43, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(192, 93, 0, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        .risk-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        .risk-title {
+            font-size: 24px;
+            font-weight: 500;
+        }
+        .risk-badge {
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 14px;
+        }
+        .risk-low {
+            background: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+            border: 1px solid rgba(40, 167, 69, 0.3);
+        }
+        .risk-medium {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+        }
+        .risk-high {
+            background: rgba(220, 53, 69, 0.2);
+            color: #dc3545;
+            border: 1px solid rgba(220, 53, 69, 0.3);
+        }
+        .risk-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+        }
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        .stat-label {
+            color: #8892b0;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .section-title {
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: 20px;
+            padding-left: 10px;
+            border-left: 3px solid #c05d00;
+        }
+        .clause-card {
+            background: rgba(20, 25, 43, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(192, 93, 0, 0.2);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        .clause-card:hover {
+            border-color: rgba(192, 93, 0, 0.4);
+        }
+        .clause-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+        .clause-type {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        .clause-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .status-standard {
+            background: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+        }
+        .status-concerning {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+        }
+        .status-problematic {
+            background: rgba(220, 53, 69, 0.2);
+            color: #dc3545;
+        }
+        .clause-text {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-family: monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #8892b0;
+        }
+        .clause-details {
+            display: grid;
+            gap: 15px;
+        }
+        .detail-item {
+            display: flex;
+            gap: 10px;
+        }
+        .detail-label {
+            color: #8892b0;
+            min-width: 120px;
+        }
+        .issues-list {
+            list-style: none;
+            padding-left: 20px;
+        }
+        .issues-list li {
+            position: relative;
+            padding: 5px 0;
+        }
+        .issues-list li:before {
+            content: "⚠️";
+            position: absolute;
+            left: -20px;
+        }
+        .recommendation {
+            background: rgba(192, 93, 0, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 3px solid #c05d00;
+            margin-top: 15px;
+        }
+        .recommendation-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #c05d00;
+        }
+        .red-flags {
+            background: rgba(220, 53, 69, 0.05);
+            border: 1px solid rgba(220, 53, 69, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        .red-flag-item {
+            background: rgba(220, 53, 69, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #dc3545;
+        }
+        .red-flag-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #dc3545;
+        }
+        .urgency-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            background: rgba(220, 53, 69, 0.2);
+            color: #dc3545;
+        }
+        .error {
+            color: #ff6b6b;
+            background: rgba(255, 68, 68, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 68, 68, 0.3);
+            text-align: center;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @media (max-width: 768px) {
+            .container { padding: 40px 20px; }
+            .card { padding: 30px 25px; }
+            h1 { font-size: 28px; }
+            .upload-area { padding: 40px 20px; }
+            .header-content { flex-direction: column; gap: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo-section">
+                <img src="presidio-logo.png" alt="Presidio Investors" class="logo">
+            </div>
+            <a href="/dashboard.html" class="back-btn">← Back to Dashboard</a>
+        </div>
+    </div>
+    <div class="container">
+        <div class="card">
+            <h1>NDA Review Generator</h1>
+            <p class="subtitle">AI-powered analysis of non-disclosure agreements with market comparison</p>
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">📄</div>
+                <h2 class="upload-title">Upload NDA Document</h2>
+                <p class="upload-subtitle">Drop your PDF here or click to browse</p>
+                <span class="browse-btn">Choose File</span>
+                <input type="file" id="fileInput" class="file-input" accept=".pdf" />
+            </div>
+            <div class="file-preview" id="filePreview">
+                <div class="file-info">
+                    <span style="font-size: 24px;">📄</span>
+                    <div class="file-details">
+                        <h3 id="fileName"></h3>
+                        <p id="fileSize"></p>
+                    </div>
+                    <button class="remove-btn" onclick="removeFile()">Remove</button>
+                </div>
+            </div>
+            <button class="review-btn" id="reviewBtn" disabled>Review NDA</button>
+            <div class="status" id="status">
+                <div class="spinner"></div>
+                <p>Analyzing document with AI...</p>
+            </div>
+            <div class="output" id="output"></div>
+        </div>
+    </div>
+    <script>
+        if (sessionStorage.getItem('presidio_authenticated') !== 'true') {
+            window.location.href = '/';
+        }
+        let selectedFile = null;
+        const elements = {
+            uploadArea: document.getElementById('uploadArea'),
+            fileInput: document.getElementById('fileInput'),
+            filePreview: document.getElementById('filePreview'),
+            fileName: document.getElementById('fileName'),
+            fileSize: document.getElementById('fileSize'),
+            reviewBtn: document.getElementById('reviewBtn'),
+            status: document.getElementById('status'),
+            output: document.getElementById('output')
+        };
+        elements.uploadArea.addEventListener('click', () => elements.fileInput.click());
+        elements.fileInput.addEventListener('change', (e) => {
+            selectedFile = e.target.files[0];
+            if (selectedFile) {
+                showFilePreview(selectedFile);
+                elements.reviewBtn.disabled = false;
+            }
+        });
+        ['dragover', 'dragleave', 'drop'].forEach(eventName => {
+            elements.uploadArea.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                const isActive = eventName === 'dragover';
+                elements.uploadArea.style.borderColor = isActive ? 'rgba(192, 93, 0, 0.6)' : 'rgba(192, 93, 0, 0.3)';
+                elements.uploadArea.style.background = isActive ? 'rgba(192, 93, 0, 0.05)' : 'rgba(255, 255, 255, 0.02)';
+
+                if (eventName === 'drop') {
+                    const files = e.dataTransfer.files;
+                    if (files.length > 0 && files[0].type === 'application/pdf') {
+                        selectedFile = files[0];
+                        showFilePreview(selectedFile);
+                        elements.reviewBtn.disabled = false;
+                    }
+                }
+            });
+        });
+        function showFilePreview(file) {
+            elements.fileName.textContent = file.name;
+            elements.fileSize.textContent = formatFileSize(file.size);
+            elements.filePreview.style.display = 'block';
+            elements.uploadArea.style.display = 'none';
+        }
+        function removeFile() {
+            selectedFile = null;
+            elements.filePreview.style.display = 'none';
+            elements.uploadArea.style.display = 'block';
+            elements.reviewBtn.disabled = true;
+            elements.fileInput.value = '';
+            elements.output.innerHTML = '';
+            elements.output.classList.remove('show');
+        }
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function formatClauseType(type) {
+            return type.replace(/_/g, ' ')
+                .split(' ')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' ');
+        }
+
+        function toggleClause(index) {
+            const details = document.getElementById(`clause-details-${index}`);
+            if (details.style.display === 'none' || !details.style.display) {
+                details.style.display = 'grid';
+            } else {
+                details.style.display = 'none';
+            }
+        }
+
+        function displayAnalysis(analysis) {
+            let html = '';
+
+            // Risk Overview
+            const riskClass = `risk-${analysis.overallRisk}`;
+            const stats = analysis.stats || {};
+
+            html += `
+                <div class="risk-overview">
+                    <div class="risk-header">
+                        <h2 class="risk-title">Risk Assessment</h2>
+                        <span class="risk-badge ${riskClass}">${analysis.overallRisk} Risk</span>
+                    </div>
+                    <div class="risk-stats">
+                        <div class="stat-card">
+                            <div class="stat-number">${stats.totalClauses || 0}</div>
+                            <div class="stat-label">Total Clauses</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" style="color: #dc3545">${stats.highRisk || 0}</div>
+                            <div class="stat-label">High Risk</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" style="color: #ffc107">${stats.mediumRisk || 0}</div>
+                            <div class="stat-label">Medium Risk</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" style="color: #28a745">${stats.lowRisk || 0}</div>
+                            <div class="stat-label">Low Risk</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Red Flags
+            if (analysis.redFlags && analysis.redFlags.length > 0) {
+                html += '<div class="red-flags"><h2 class="section-title">🚨 Critical Issues</h2>';
+                analysis.redFlags.forEach(flag => {
+                    html += `
+                        <div class="red-flag-item">
+                            <div class="red-flag-title">${flag.issue}</div>
+                            <div>Impact: ${flag.impact}</div>
+                            <span class="urgency-badge">${flag.urgency}</span>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+            }
+
+            // Clause Analysis
+            html += '<h2 class="section-title">📋 Clause-by-Clause Analysis</h2>';
+
+            analysis.clauses.forEach((clause, index) => {
+                const statusClass = `status-${clause.status}`;
+                const severityColor = {
+                    high: '#dc3545',
+                    medium: '#ffc107',
+                    low: '#28a745'
+                }[clause.severity];
+
+                html += `
+                    <div class="clause-card">
+                        <div class="clause-header" onclick="toggleClause(${index})">
+                            <div>
+                                <div class="clause-type">${formatClauseType(clause.type)}</div>
+                                <span class="clause-status ${statusClass}">${clause.status}</span>
+                            </div>
+                            <div style="color: ${severityColor}; font-weight: 600;">
+                                ${clause.severity.toUpperCase()}
+                            </div>
+                        </div>
+
+                        <div class="clause-details" id="clause-details-${index}" style="display: none;">
+                            <div class="clause-text">${clause.text}</div>
+
+                            <div class="detail-item">
+                                <span class="detail-label">Market Standard:</span>
+                                <span>${clause.marketComparison}</span>
+                            </div>
+
+                            ${clause.issues && clause.issues.length > 0 ? `
+                                <div class="detail-item">
+                                    <span class="detail-label">Issues:</span>
+                                    <ul class="issues-list">
+                                        ${clause.issues.map(issue => `<li>${issue}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            ` : ''}
+
+                            ${clause.recommendation ? `
+                                <div class="recommendation">
+                                    <div class="recommendation-title">Recommendation</div>
+                                    <div>${clause.recommendation}</div>
+                                </div>
+                            ` : ''}
+
+                            <div class="detail-item">
+                                <span class="detail-label">Confidence:</span>
+                                <span>${Math.round(clause.confidence * 100)}%</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            elements.output.innerHTML = html;
+            elements.output.classList.add('show');
+        }
+
+        elements.reviewBtn.addEventListener('click', async () => {
+            if (!selectedFile) return;
+            const formData = new FormData();
+            formData.append('nda', selectedFile);
+
+            elements.status.style.display = 'block';
+            elements.output.classList.remove('show');
+            try {
+                const response = await fetch('/api/review_nda', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.success && data.analysis) {
+                    displayAnalysis(data.analysis);
+                } else {
+                    elements.output.innerHTML = `<div class="error">Error: ${data.error || 'Analysis failed'}</div>`;
+                    elements.output.classList.add('show');
+                }
+            } catch (error) {
+                console.error('Error during NDA review:', error);
+                elements.output.innerHTML = `<div class="error">Connection error. Please try again.</div>`;
+                elements.output.classList.add('show');
+            } finally {
+                elements.status.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

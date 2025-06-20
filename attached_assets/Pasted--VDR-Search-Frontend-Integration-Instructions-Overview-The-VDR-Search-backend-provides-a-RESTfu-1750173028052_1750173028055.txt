@@ -1,0 +1,297 @@
+# VDR Search Frontend Integration Instructions
+
+## Overview
+The VDR Search backend provides a RESTful API for uploading, indexing, and searching through file hierarchies. The backend uses Apache Tika to parse various file formats including PDFs, Office documents, and more.
+
+## Base Configuration
+- **API Base URL**: `http://localhost:3000` (Node.js) or `http://localhost:8080` (Java)
+- **Content-Type**: `application/json` for most endpoints, `multipart/form-data` for upload
+- **CORS**: Enabled for all origins
+
+## Required HTML Elements
+
+### 1. File Upload Section
+```html
+<!-- Container ID: vdr-upload-container -->
+<div id="vdr-upload-container">
+  <form id="vdr-upload-form" enctype="multipart/form-data">
+    <!-- IMPORTANT: Must include webkitdirectory for folder upload -->
+    <input type="file" 
+           id="vdr-folder-input" 
+           name="folder" 
+           webkitdirectory 
+           directory 
+           multiple 
+           required />
+    
+    <!-- Optional: Hidden field for session ID -->
+    <input type="hidden" id="vdr-session-id" name="sessionId" value="" />
+    
+    <button type="submit" id="vdr-upload-btn">Upload and Index Files</button>
+  </form>
+  
+  <!-- Upload progress indicator -->
+  <div id="vdr-upload-progress" style="display: none;">
+    <div class="progress-bar"></div>
+    <span class="progress-text">Uploading...</span>
+  </div>
+</div>
+```
+
+### 2. Search Section
+```html
+<!-- Container ID: vdr-search-container -->
+<div id="vdr-search-container" style="display: none;">
+  <form id="vdr-search-form">
+    <!-- Search input -->
+    <input type="text" 
+           id="vdr-search-input" 
+           name="query" 
+           placeholder="Search for content..." 
+           required />
+    
+    <!-- Search options -->
+    <div id="vdr-search-options">
+      <label>
+        <input type="checkbox" id="vdr-search-content" checked />
+        Search in file content
+      </label>
+      <label>
+        <input type="checkbox" id="vdr-search-filenames" checked />
+        Search in file names
+      </label>
+      <label>
+        <input type="checkbox" id="vdr-search-metadata" checked />
+        Search in metadata
+      </label>
+    </div>
+    
+    <!-- File type filters (optional) -->
+    <select id="vdr-file-type-filter" multiple>
+      <option value="pdf">PDF</option>
+      <option value="docx">Word</option>
+      <option value="xlsx">Excel</option>
+      <option value="pptx">PowerPoint</option>
+      <option value="txt">Text</option>
+    </select>
+    
+    <button type="submit" id="vdr-search-btn">Search</button>
+  </form>
+</div>
+```
+
+### 3. Session Info Display
+```html
+<!-- Container ID: vdr-session-info -->
+<div id="vdr-session-info" style="display: none;">
+  <h3>Session Information</h3>
+  <p>Session ID: <span id="vdr-session-id-display"></span></p>
+  <p>Files Indexed: <span id="vdr-files-count"></span></p>
+  <p>Total Size: <span id="vdr-total-size"></span></p>
+  <div id="vdr-file-types-chart"></div>
+  <button id="vdr-delete-session-btn">Clear Session</button>
+</div>
+```
+
+### 4. Search Results Display
+```html
+<!-- Container ID: vdr-results-container -->
+<div id="vdr-results-container" style="display: none;">
+  <h3>Search Results (<span id="vdr-results-count">0</span>)</h3>
+  <div id="vdr-results-list">
+    <!-- Results will be dynamically inserted here -->
+    <!-- Template for each result: -->
+    <!--
+    <div class="vdr-result-item" data-filepath="{filePath}">
+      <h4 class="vdr-result-filename">{fileName}</h4>
+      <span class="vdr-result-type">{mimeType}</span>
+      <span class="vdr-result-score">Relevance: {relevanceScore}</span>
+      <div class="vdr-result-matches">
+        {matches.map(match => `<p class="vdr-match-context">${match}</p>`)}
+      </div>
+      <button class="vdr-view-content-btn" data-filepath="{filePath}">View Full Content</button>
+    </div>
+    -->
+  </div>
+</div>
+```
+
+### 5. Content Viewer Modal
+```html
+<!-- Container ID: vdr-content-modal -->
+<div id="vdr-content-modal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h3 id="vdr-content-filename"></h3>
+    <div id="vdr-content-metadata"></div>
+    <pre id="vdr-content-text"></pre>
+  </div>
+</div>
+```
+
+## JavaScript Integration Points
+
+### 1. Initialize Session Storage
+```javascript
+// Store session ID in localStorage or sessionStorage
+const VDRSession = {
+  setSessionId: (id) => localStorage.setItem('vdr-session-id', id),
+  getSessionId: () => localStorage.getItem('vdr-session-id'),
+  clearSession: () => localStorage.removeItem('vdr-session-id')
+};
+```
+
+### 2. API Endpoints Reference
+```javascript
+const VDR_API = {
+  upload: '/api/vdr/upload',
+  search: '/api/vdr/search',
+  getSession: (sessionId) => `/api/vdr/session/${sessionId}`,
+  deleteSession: (sessionId) => `/api/vdr/session/${sessionId}`,
+  extract: '/api/vdr/extract',
+  health: '/api/vdr/health'
+};
+```
+
+### 3. Event Handlers to Implement
+
+#### Upload Handler
+- Attach to: `#vdr-upload-form` submit event
+- Show progress indicator during upload
+- Store returned sessionId
+- Display session info
+- Show search container
+
+#### Search Handler
+- Attach to: `#vdr-search-form` submit event
+- Collect search options from checkboxes
+- Display results in `#vdr-results-list`
+- Highlight search terms in results
+
+#### View Content Handler
+- Attach to: `.vdr-view-content-btn` click event
+- Fetch full content using extract endpoint
+- Display in modal
+
+#### Delete Session Handler
+- Attach to: `#vdr-delete-session-btn` click event
+- Confirm before deletion
+- Clear stored session ID
+- Reset UI to initial state
+
+## Response Formats
+
+### Upload Response
+```json
+{
+  "sessionId": "vdr-1234567890-abc123",
+  "status": "success",
+  "filesIndexed": 42,
+  "totalSize": 10485760
+}
+```
+
+### Search Response
+```json
+{
+  "sessionId": "vdr-1234567890-abc123",
+  "query": "quarterly report",
+  "resultsCount": 5,
+  "results": [
+    {
+      "filePath": "/uploads/documents/report.pdf",
+      "fileName": "report.pdf",
+      "mimeType": "application/pdf",
+      "matches": [
+        "...found in quarterly report for Q3 2024...",
+        "...the quarterly report shows significant growth..."
+      ],
+      "relevanceScore": 3.5
+    }
+  ]
+}
+```
+
+### Extract Response
+```json
+{
+  "filePath": "/uploads/documents/report.pdf",
+  "content": "Full extracted text content...",
+  "metadata": {
+    "Author": "John Doe",
+    "Title": "Quarterly Report Q3 2024",
+    "Creation-Date": "2024-09-30",
+    "Pages": "25"
+  }
+}
+```
+
+## Styling Recommendations
+
+### CSS Classes to Define
+- `.vdr-container` - Main container styling
+- `.vdr-result-item` - Individual result styling
+- `.vdr-result-item:hover` - Hover effect for results
+- `.vdr-match-context` - Style for search context snippets
+- `.vdr-highlight` - Highlight search terms in results
+- `.vdr-file-icon` - Icons based on file type
+- `.vdr-progress-bar` - Upload progress animation
+- `.vdr-modal` - Modal overlay styling
+
+### File Type Icons
+Map MIME types to appropriate icons:
+- `application/pdf` → PDF icon
+- `application/vnd.ms-excel` → Excel icon
+- `application/vnd.ms-powerpoint` → PowerPoint icon
+- `application/msword` → Word icon
+- `text/plain` → Text icon
+
+## Error Handling
+
+### Display Errors
+- Create a dedicated error display area: `<div id="vdr-error-message"></div>`
+- Show user-friendly messages for common errors:
+  - Network errors: "Unable to connect to server"
+  - Upload errors: "Failed to upload files. Please try again."
+  - Search errors: "Search failed. Please check your query."
+  - Session errors: "Session expired. Please upload files again."
+
+### Validation
+- Validate file selection before upload
+- Validate search query (minimum 2 characters)
+- Check session existence before search
+
+## Best Practices
+
+1. **Progressive Enhancement**
+   - Hide search functionality until files are uploaded
+   - Show loading states during API calls
+   - Disable buttons during processing
+
+2. **Performance**
+   - Implement debouncing for search input
+   - Paginate results if more than 50
+   - Lazy load file content on demand
+
+3. **User Experience**
+   - Show file upload progress
+   - Highlight search terms in results
+   - Provide clear feedback for all actions
+   - Auto-save session ID to allow page refresh
+
+4. **Security**
+   - Sanitize all displayed content
+   - Validate file types on frontend
+   - Implement CSRF protection if needed
+
+## Testing Checklist
+
+- [ ] Upload single file
+- [ ] Upload entire folder
+- [ ] Search with various queries
+- [ ] Toggle search options
+- [ ] View file content
+- [ ] Delete session
+- [ ] Handle network errors
+- [ ] Test with different file types
+- [ ] Verify session persistence

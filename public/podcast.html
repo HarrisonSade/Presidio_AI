@@ -1,0 +1,314 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PDF to Podcast Generator - Presidio Investors</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0e27; min-height: 100vh; color: white; }
+        .header { background: rgba(20, 25, 43, 0.95); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(192, 93, 0, 0.2); padding: 20px 0; position: sticky; top: 0; z-index: 100; }
+        .header-content { max-width: 1200px; margin: 0 auto; padding: 0 30px; display: flex; justify-content: space-between; align-items: center; }
+        .logo-section { display: flex; align-items: center; gap: 15px; }
+        .logo { height: 40px; filter: brightness(0) invert(1); }
+        .back-btn { background: transparent; border: 1px solid rgba(192, 93, 0, 0.5); color: #c05d00; padding: 10px 24px; border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: 500; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1px; }
+        .back-btn:hover { background: rgba(192, 93, 0, 0.1); transform: translateY(-1px); }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 30px; }
+        .card { background: rgba(20, 25, 43, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(192, 93, 0, 0.2); border-radius: 20px; padding: 50px; }
+        h1 { font-size: 36px; font-weight: 300; letter-spacing: 2px; margin-bottom: 20px; text-align: center; background: linear-gradient(135deg, #c05d00 0%, #ff7a00 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .subtitle { text-align: center; color: #8892b0; font-size: 16px; margin-bottom: 50px; letter-spacing: 1px; }
+        
+        /* Progress Steps */
+        .progress-container { margin-bottom: 40px; }
+        .progress-steps { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .step { display: flex; flex-direction: column; align-items: center; flex: 1; position: relative; }
+        .step:not(:last-child)::after { content: ''; position: absolute; top: 20px; left: 60%; width: 80%; height: 2px; background: rgba(192, 93, 0, 0.3); z-index: 1; }
+        .step.active:not(:last-child)::after { background: rgba(192, 93, 0, 0.8); }
+        .step-circle { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; position: relative; z-index: 2; transition: all 0.3s ease; }
+        .step.pending .step-circle { background: rgba(192, 93, 0, 0.2); border: 2px solid rgba(192, 93, 0, 0.5); color: #8892b0; }
+        .step.active .step-circle { background: linear-gradient(135deg, #c05d00 0%, #ff7a00 100%); color: white; box-shadow: 0 0 20px rgba(192, 93, 0, 0.5); }
+        .step.completed .step-circle { background: #28a745; color: white; }
+        .step-label { margin-top: 10px; font-size: 12px; text-align: center; color: #8892b0; font-weight: 500; }
+        .step.active .step-label { color: #c05d00; }
+        .step.completed .step-label { color: #28a745; }
+        
+        .upload-area { border: 2px dashed rgba(192, 93, 0, 0.3); border-radius: 15px; padding: 60px 40px; text-align: center; transition: all 0.3s ease; cursor: pointer; margin-bottom: 40px; background: rgba(255, 255, 255, 0.02); }
+        .upload-area:hover { border-color: rgba(192, 93, 0, 0.6); background: rgba(192, 93, 0, 0.05); }
+        .upload-area.dragover { border-color: #c05d00; background: rgba(192, 93, 0, 0.1); transform: scale(1.02); }
+        .upload-icon { font-size: 64px; margin-bottom: 20px; opacity: 0.7; }
+        .upload-title { font-size: 24px; font-weight: 500; margin-bottom: 10px; }
+        .upload-subtitle { color: #8892b0; font-size: 16px; margin-bottom: 25px; }
+        .browse-btn { background: linear-gradient(135deg, #c05d00 0%, #ff7a00 100%); border: none; padding: 12px 30px; border-radius: 8px; color: white; font-weight: 600; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1px; font-size: 14px; }
+        .browse-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(192, 93, 0, 0.3); }
+        .file-input { display: none; }
+        .file-preview { display: none; background: rgba(255, 255, 255, 0.05); border-radius: 10px; padding: 20px; margin-bottom: 30px; border: 1px solid rgba(192, 93, 0, 0.2); }
+        .file-info { display: flex; align-items: center; gap: 15px; }
+        .file-details h3 { margin-bottom: 5px; }
+        .file-details p { color: #8892b0; font-size: 14px; }
+        .remove-btn { background: transparent; border: 1px solid rgba(220, 53, 69, 0.5); color: #dc3545; padding: 8px 16px; border-radius: 6px; cursor: pointer; margin-left: auto; transition: all 0.3s ease; }
+        .remove-btn:hover { background: rgba(220, 53, 69, 0.1); }
+        .generate-btn { width: 100%; background: linear-gradient(135deg, #c05d00 0%, #ff7a00 100%); border: none; padding: 16px; border-radius: 10px; color: white; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 40px; }
+        .generate-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 15px 40px rgba(192, 93, 0, 0.4); }
+        .generate-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        
+        .status { display: none; text-align: center; padding: 20px; background: rgba(255, 255, 255, 0.05); border-radius: 10px; margin-bottom: 30px; }
+        .spinner { border: 3px solid rgba(192, 93, 0, 0.3); border-top: 3px solid #c05d00; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 15px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .status-text { margin-top: 10px; }
+        
+        .results { display: none; }
+        .result-section { background: rgba(40, 167, 69, 0.1); border: 1px solid rgba(40, 167, 69, 0.3); border-radius: 10px; padding: 20px; margin-bottom: 20px; }
+        .result-section h3 { margin-bottom: 15px; color: #28a745; }
+        .download-btn { background: linear-gradient(135deg, #28a745 0%, #20c997 100%); border: none; padding: 12px 24px; border-radius: 8px; color: white; font-weight: 600; cursor: pointer; transition: all 0.3s ease; text-decoration: none; display: inline-block; margin-right: 10px; margin-bottom: 10px; }
+        .download-btn:hover { transform: translateY(-1px); box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3); }
+        .summary-text { background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 8px; margin-top: 10px; max-height: 200px; overflow-y: auto; font-family: monospace; font-size: 14px; line-height: 1.5; }
+        .audio-player { margin-top: 15px; width: 100%; }
+        .error { display: none; background: rgba(220, 53, 69, 0.1); border: 1px solid rgba(220, 53, 69, 0.3); color: #ff6b6b; padding: 15px 20px; border-radius: 10px; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo-section">
+                <img src="presidio-logo.png" alt="Presidio Investors" class="logo">
+                <img src="hellaslogo.png" alt="Hellas" class="logo">
+            </div>
+            <a href="/dashboard.html" class="back-btn">← Back to Dashboard</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <h1>PDF to Podcast Generator</h1>
+            <p class="subtitle">Upload Italian PDF documents to create English podcast content</p>
+
+            <div class="progress-container">
+                <div class="progress-steps">
+                    <div class="step pending" id="step1">
+                        <div class="step-circle">1</div>
+                        <div class="step-label">Upload & Translate</div>
+                    </div>
+                    <div class="step pending" id="step2">
+                        <div class="step-circle">2</div>
+                        <div class="step-label">AI Summary</div>
+                    </div>
+                    <div class="step pending" id="step3">
+                        <div class="step-circle">3</div>
+                        <div class="step-label">Generate Podcast</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="error" id="error"></div>
+
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">📄</div>
+                <h2 class="upload-title">Upload Italian PDF Document</h2>
+                <p class="upload-subtitle">Drop your PDF here or click to browse</p>
+                <span class="browse-btn">Choose File</span>
+                <input type="file" id="fileInput" class="file-input" accept=".pdf">
+            </div>
+
+            <div class="file-preview" id="filePreview">
+                <div class="file-info">
+                    <span>📄</span>
+                    <div class="file-details">
+                        <h3 id="fileName"></h3>
+                        <p id="fileSize"></p>
+                    </div>
+                    <button class="remove-btn" onclick="removeFile()">Remove</button>
+                </div>
+            </div>
+
+            <button class="generate-btn" id="generateBtn" onclick="generatePodcast()" disabled>
+                Generate Podcast Content
+            </button>
+
+            <div class="status" id="status">
+                <div class="spinner"></div>
+                <p class="status-text" id="statusText">Starting process...</p>
+            </div>
+
+            <div class="results" id="results">
+                <div class="result-section">
+                    <h3>📄 Translated PDF</h3>
+                    <p>Your original Italian PDF has been translated to English.</p>
+                    <a href="#" class="download-btn" id="translatedPdfBtn" download>Download Translated PDF</a>
+
+
+                </div>
+
+                <div class="result-section">
+                    <h3>📋 AI Summary</h3>
+                    <p>Intelligent summary and podcast script generated from the translated content.</p>
+                    <div class="summary-text" id="summaryText"></div>
+                    <a href="#" class="download-btn" id="summaryBtn" download>Download Summary</a>
+
+                </div>
+
+                <div class="result-section">
+                    <h3>🎧 Podcast Audio</h3>
+                    <p>AI-generated podcast audio based on the document summary.</p>
+                    <audio class="audio-player" id="audioPlayer" controls>
+                        <source src="" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                    <br>
+                    <a href="#" class="download-btn" id="podcastBtn" download>Download Podcast MP3</a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        if (sessionStorage.getItem('presidio_authenticated') !== 'true') {
+            window.location.href = '/';
+        }
+
+        let selectedFile = null;
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const filePreview = document.getElementById('filePreview');
+        const generateBtn = document.getElementById('generateBtn');
+        const error = document.getElementById('error');
+        const status = document.getElementById('status');
+        const statusText = document.getElementById('statusText');
+        const results = document.getElementById('results');
+
+        uploadArea.addEventListener('click', () => fileInput.click());
+        uploadArea.addEventListener('dragover', (e) => { e.preventDefault(); uploadArea.classList.add('dragover'); });
+        uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0 && files[0].type === 'application/pdf') {
+                handleFile(files[0]);
+            } else {
+                showError('Please upload a PDF file');
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) handleFile(e.target.files[0]);
+        });
+
+        function handleFile(file) {
+            selectedFile = file;
+            document.getElementById('fileName').textContent = file.name;
+            document.getElementById('fileSize').textContent = formatFileSize(file.size);
+            filePreview.style.display = 'block';
+            generateBtn.disabled = false;
+            hideError();
+            resetProgress();
+        }
+
+        function removeFile() {
+            selectedFile = null;
+            filePreview.style.display = 'none';
+            generateBtn.disabled = true;
+            fileInput.value = '';
+            results.style.display = 'none';
+            resetProgress();
+        }
+
+        function resetProgress() {
+            document.querySelectorAll('.step').forEach(step => {
+                step.className = 'step pending';
+            });
+        }
+
+        function updateProgress(stepNum, state) {
+            const step = document.getElementById(`step${stepNum}`);
+            step.className = `step ${state}`;
+            if (state === 'completed') {
+                step.querySelector('.step-circle').innerHTML = '✓';
+            }
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function showError(message) {
+            error.textContent = message;
+            error.style.display = 'block';
+            setTimeout(hideError, 5000);
+        }
+
+        function hideError() {
+            error.style.display = 'none';
+        }
+
+        async function generatePodcast() {
+            if (!selectedFile) {
+                showError('Please select a PDF file first');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('pdf', selectedFile);
+
+            try {
+                status.style.display = 'block';
+                results.style.display = 'none';
+                generateBtn.disabled = true;
+                generateBtn.textContent = 'Generating...';
+
+                // Step 1: Translation
+                updateProgress(1, 'active');
+                statusText.textContent = 'Translating PDF from Italian to English...';
+
+                const response = await fetch('/api/podcast/generate', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Generation failed');
+                }
+
+                updateProgress(1, 'completed');
+                updateProgress(2, 'completed');
+                updateProgress(3, 'completed');
+
+                status.style.display = 'none';
+                results.style.display = 'block';
+
+                // Populate results
+                const translatedBtn = document.getElementById('translatedPdfBtn');
+                translatedBtn.href = data.translatedPdfUrl;
+                translatedBtn.download = 'translated_' + selectedFile.name;
+
+                document.getElementById('summaryText').textContent = data.summary;
+
+                const summaryBtn = document.getElementById('summaryBtn');
+                summaryBtn.href = data.summaryUrl;
+                summaryBtn.download = 'summary.txt';
+
+                const audioPlayer = document.getElementById('audioPlayer');
+                audioPlayer.src = data.podcastUrl;
+
+                const podcastBtn = document.getElementById('podcastBtn');
+                podcastBtn.href = data.podcastUrl;
+                podcastBtn.download = 'podcast.mp3';
+
+            } catch (error) {
+                console.error('Error:', error);
+                showError('Generation failed: ' + error.message);
+                status.style.display = 'none';
+                resetProgress();
+            } finally {
+                generateBtn.disabled = false;
+                generateBtn.textContent = 'Generate Podcast Content';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,579 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contract Waterfall - Presidio Intelligence Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0e27;
+            min-height: 100vh;
+            color: white;
+        }
+
+        .header {
+            background: rgba(20, 25, 43, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(192, 93, 0, 0.2);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            height: 40px;
+            filter: brightness(0) invert(1);
+        }
+
+        .back-btn {
+            background: transparent;
+            border: 1px solid rgba(192, 93, 0, 0.5);
+            color: #c05d00;
+            padding: 10px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .back-btn:hover {
+            background: rgba(192, 93, 0, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .card {
+            background: rgba(20, 25, 43, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(192, 93, 0, 0.2);
+            border-radius: 20px;
+            padding: 50px;
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 300;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            text-align: center;
+            background: linear-gradient(135deg, #c05d00 0%, #ff7a00 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #8892b0;
+            font-size: 16px;
+            margin-bottom: 50px;
+            letter-spacing: 1px;
+        }
+
+        .section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            border: 2px dashed rgba(192, 93, 0, 0.3);
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .section h2 {
+            color: #c05d00;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        .upload-area {
+            border: 2px dashed rgba(192, 93, 0, 0.3);
+            border-radius: 15px;
+            padding: 60px 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.02);
+            margin-bottom: 1rem;
+        }
+
+        .upload-area:hover, .upload-area.dragover {
+            border-color: rgba(192, 93, 0, 0.6);
+            background: rgba(192, 93, 0, 0.05);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .browse-btn {
+            background: linear-gradient(135deg, #c05d00 0%, #ff7a00 100%);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 14px;
+            display: inline-block;
+            margin-top: 1rem;
+        }
+
+        .browse-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(192, 93, 0, 0.3);
+        }
+
+        .files-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid rgba(192, 93, 0, 0.2);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .file-item:last-child {
+            border-bottom: none;
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .remove-btn {
+            background: transparent;
+            border: 1px solid rgba(220, 53, 69, 0.5);
+            color: #dc3545;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.8rem;
+        }
+
+        .remove-btn:hover {
+            background: rgba(220, 53, 69, 0.1);
+        }
+
+        .metrics-input {
+            width: 100%;
+            min-height: 120px;
+            padding: 1rem;
+            border: 1px solid rgba(192, 93, 0, 0.2);
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 1rem;
+            resize: vertical;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+        }
+
+        .metrics-input::placeholder {
+            color: #8892b0;
+        }
+
+        .metrics-help {
+            font-size: 0.9rem;
+            color: #8892b0;
+            margin-top: 0.5rem;
+        }
+
+        .process-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #c05d00 0%, #ff7a00 100%);
+            border: none;
+            padding: 16px;
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 1rem;
+        }
+
+        .process-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(192, 93, 0, 0.4);
+        }
+
+        .process-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .status {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            margin-top: 1rem;
+        }
+
+        .spinner {
+            border: 3px solid rgba(192, 93, 0, 0.3);
+            border-top: 3px solid #c05d00;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .results {
+            display: none;
+            margin-top: 2rem;
+            padding: 20px;
+            background: rgba(40, 167, 69, 0.1);
+            border: 1px solid rgba(40, 167, 69, 0.3);
+            border-radius: 10px;
+        }
+
+        .results h3 {
+            margin-bottom: 15px;
+            color: #28a745;
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 1rem;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        .error {
+            display: none;
+            background: rgba(220, 53, 69, 0.1);
+            border: 1px solid rgba(220, 53, 69, 0.3);
+            color: #ff6b6b;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-top: 1rem;
+        }
+
+        .file-count {
+            font-weight: bold;
+            color: #c05d00;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo-section">
+                <img src="presidio-logo.png" alt="Presidio Investors" class="logo">
+            </div>
+            <a href="/dashboard.html" class="back-btn">← Back to Dashboard</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <h1>Contract Waterfall Analyzer</h1>
+            <p class="subtitle">Upload multiple contracts and extract custom metrics into a structured table</p>
+
+            <div class="section">
+                <h2>📄 Upload Contract PDFs</h2>
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">📁</div>
+                    <h3>Drop PDF files here or click to browse</h3>
+                    <p>You can upload multiple PDF contracts</p>
+                    <span class="browse-btn">Choose Files</span>
+                    <input type="file" id="fileInput" class="file-input" accept=".pdf" multiple>
+                </div>
+                
+                <div id="filesSection" style="display: none;">
+                    <h3>Uploaded Files (<span class="file-count" id="fileCount">0</span>)</h3>
+                    <div class="files-list" id="filesList"></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📊 Define Metrics to Extract</h2>
+                <textarea id="metricsInput" class="metrics-input" placeholder="Enter the columns/metrics you want to extract from each contract. For example:
+- Contract Value
+- Start Date
+- End Date
+- Party Names
+- Payment Terms
+- Renewal Clauses
+- Termination Conditions
+
+Each line should be a separate metric you want to analyze."></textarea>
+                <div class="metrics-help">
+                    Define each metric on a new line. The AI will extract these specific data points from each contract.
+                </div>
+            </div>
+
+            <button class="process-btn" id="processBtn" onclick="processContracts()" disabled>
+                Analyze Contracts & Generate Table
+            </button>
+
+            <div class="error" id="error"></div>
+
+            <div class="status" id="status">
+                <div class="spinner"></div>
+                <p id="statusText">Processing contracts...</p>
+            </div>
+
+            <div class="results" id="results">
+                <h3>✅ Analysis Complete</h3>
+                <p>Your contract analysis has been completed. Download the results below:</p>
+                <a href="#" class="download-btn" id="downloadBtn" download>Download Excel Table</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check authentication
+        if (sessionStorage.getItem('presidio_authenticated') !== 'true') {
+            window.location.href = '/';
+        }
+
+        let uploadedFiles = [];
+        
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const filesList = document.getElementById('filesList');
+        const filesSection = document.getElementById('filesSection');
+        const fileCount = document.getElementById('fileCount');
+        const metricsInput = document.getElementById('metricsInput');
+        const processBtn = document.getElementById('processBtn');
+        const error = document.getElementById('error');
+        const status = document.getElementById('status');
+        const statusText = document.getElementById('statusText');
+        const results = document.getElementById('results');
+        const downloadBtn = document.getElementById('downloadBtn');
+
+        // Upload area interactions
+        uploadArea.addEventListener('click', () => fileInput.click());
+        
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = Array.from(e.dataTransfer.files).filter(file => file.type === 'application/pdf');
+            if (files.length > 0) {
+                addFiles(files);
+            } else {
+                showError('Please upload only PDF files');
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            const files = Array.from(e.target.files);
+            addFiles(files);
+            fileInput.value = ''; // Reset input to allow re-uploading same files
+        });
+
+        metricsInput.addEventListener('input', updateProcessButton);
+
+        function addFiles(files) {
+            files.forEach(file => {
+                if (file.type === 'application/pdf') {
+                    const fileId = Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                    uploadedFiles.push({
+                        id: fileId,
+                        file: file,
+                        name: file.name,
+                        size: file.size
+                    });
+                }
+            });
+            
+            updateFilesList();
+            updateProcessButton();
+            hideError();
+        }
+
+        function removeFile(fileId) {
+            uploadedFiles = uploadedFiles.filter(f => f.id !== fileId);
+            updateFilesList();
+            updateProcessButton();
+        }
+
+        function updateFilesList() {
+            if (uploadedFiles.length === 0) {
+                filesSection.style.display = 'none';
+                return;
+            }
+
+            filesSection.style.display = 'block';
+            fileCount.textContent = uploadedFiles.length;
+            
+            filesList.innerHTML = uploadedFiles.map(fileObj => `
+                <div class="file-item">
+                    <div class="file-info">
+                        <span>📄</span>
+                        <div>
+                            <strong>${fileObj.name}</strong><br>
+                            <small>${formatFileSize(fileObj.size)}</small>
+                        </div>
+                    </div>
+                    <button class="remove-btn" onclick="removeFile('${fileObj.id}')">Remove</button>
+                </div>
+            `).join('');
+        }
+
+        function updateProcessButton() {
+            const hasFiles = uploadedFiles.length > 0;
+            const hasMetrics = metricsInput.value.trim().length > 0;
+            processBtn.disabled = !(hasFiles && hasMetrics);
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function showError(message) {
+            error.textContent = message;
+            error.style.display = 'block';
+        }
+
+        function hideError() {
+            error.style.display = 'none';
+        }
+
+        async function processContracts() {
+            if (uploadedFiles.length === 0 || !metricsInput.value.trim()) {
+                showError('Please upload files and define metrics');
+                return;
+            }
+
+            processBtn.disabled = true;
+            status.style.display = 'block';
+            results.style.display = 'none';
+            hideError();
+
+            const formData = new FormData();
+            
+            // Add all files
+            uploadedFiles.forEach((fileObj, index) => {
+                formData.append('contracts', fileObj.file);
+            });
+            
+            // Add metrics
+            formData.append('metrics', metricsInput.value.trim());
+
+            try {
+                statusText.textContent = 'Uploading files and processing with AI...';
+                
+                const response = await fetch('/api/contract-waterfall/analyze', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status}`);
+                }
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    statusText.textContent = 'Analysis complete! Preparing download...';
+                    
+                    // Set up download link
+                    downloadBtn.href = `/api/contract-waterfall/download/${result.analysisId}`;
+                    downloadBtn.download = `contract_analysis_${new Date().toISOString().split('T')[0]}.xlsx`;
+                    
+                    status.style.display = 'none';
+                    results.style.display = 'block';
+                } else {
+                    throw new Error(result.error || 'Analysis failed');
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                showError('Error processing contracts: ' + error.message);
+                status.style.display = 'none';
+            } finally {
+                processBtn.disabled = false;
+            }
+        }
+
+        // Initialize
+        updateProcessButton();
+    </script>
+</body>
+</html>

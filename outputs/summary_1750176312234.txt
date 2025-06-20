@@ -1,0 +1,10 @@
+This document details a tax audit verification conducted on October 18, 2023, against Hellas Verona Football Club S.p.A. (VAT/Tax ID: 02284490238), examining VAT registers and financial records from 2019-2024. The audit revealed two main areas of concern:
+
+1. **VAT Debt Position**: The company has outstanding VAT debts of €104,704.25 for 2021 and €1,206,369.92 for 2022. Following Resolution 80/E of December 27, 2022, the company opted for a 60-installment payment plan totaling €1,756,462.31, as permitted under special provisions for sports organizations affected by COVID-19. As of October 23, 2023, the remaining debt stood at €13,125,895.48, including €1,435,037.51 in VAT obligations.
+
+2. **Criminal Investigation**: The company is involved in criminal proceedings (Case No. 2536/2024) at the Verona Public Prosecutor's Office concerning potentially fraudulent transactions with three suppliers:
+   - **BLU TOWER SRL**: Issued invoices totaling €431,080.20 in 2020 for cleaning, maintenance, and sanitization services
+   - **BEAVER SERVIZI SRL**: Issued invoices totaling €159,118.90 in 2022 for maintenance and technical services
+   - **POLISERVIZ GRUP EOOD**: Bulgarian company involved in the investigation
+
+The Italian Revenue Agency flagged these suppliers as "missing traders" or "defaulting traders" who issued invoices for services potentially never rendered, failed to make VAT payments on approximately €8.5 million in operations, and received suspicious invoices from foreign entities. The audit includes detailed examination of VAT registers for purchases, sales, and various business operations across multiple fiscal years, with no other irregularities detected beyond the two main issues identified.

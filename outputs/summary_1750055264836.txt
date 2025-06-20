@@ -1,0 +1,13 @@
+This document is a tax audit report dated October 18, 2023, conducted by Italian authorities against Hellas Verona Football Club SPA. The audit reveals significant tax irregularities and potential fraudulent activities involving VAT payments and suspicious business relationships.
+
+The investigation uncovered that Hellas Verona FC had substantial unpaid VAT debts totaling €104,704.25 for 2021 and €1,206,369.92 for 2022. While the club claimed to be utilizing an installment payment plan under special provisions for sports organizations affected by COVID-19, authorities questioned the legitimacy of certain transactions.
+
+A major focus of the audit was the club's business relationships with three companies: BLU TOWER SRL, BEAVER SERVIZI SRL, and POLISERVIZ GRUP EOOD. These companies issued invoices to Hellas Verona for various services including cleaning, maintenance, sanitization, and facility management at the Bentegodi Stadium and training centers. The Revenue Agency flagged these transactions as potentially fraudulent, noting that:
+
+1. The supplier companies were characterized as "missing traders" or "defaulting traders"
+2. They issued invoices across multiple unrelated business sectors
+3. Services described in invoices may not have been actually performed
+4. Despite full payment of invoices, the companies failed to remit approximately €8.5 million in VAT to authorities
+5. The companies received invoices from suspicious foreign entities, particularly Bulgarian companies
+
+The audit examined numerous invoices from 2020-2022, totaling hundreds of thousands of euros for services ranging from stadium cleaning and maintenance to COVID-19 sanitization procedures. The investigation is connected to criminal proceedings (Case No. 2536/2024) at the Verona Public Prosecutor's Office, indicating potential criminal charges for tax evasion and fraudulent accounting practices.

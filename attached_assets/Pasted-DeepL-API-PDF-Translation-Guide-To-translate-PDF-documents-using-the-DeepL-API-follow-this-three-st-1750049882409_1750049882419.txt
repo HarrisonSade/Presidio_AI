@@ -1,0 +1,78 @@
+DeepL API PDF Translation Guide
+To translate PDF documents using the DeepL API, follow this three-step process:
+Prerequisites
+
+DeepL API authentication key
+API endpoint: https://api.deepl.com (Pro) or https://api-free.deepl.com (Free)
+Note: PDF documents are billed a minimum of 50,000 characters regardless of actual content
+
+Step 1: Upload PDF for Translation
+Make a POST request to /v2/document with multipart/form-data:
+bashcurl -X POST 'https://api.deepl.com/v2/document' \
+--header 'Authorization: DeepL-Auth-Key [YOUR_AUTH_KEY]' \
+--form 'target_lang=DE' \
+--form 'file=@document.pdf' \
+--form 'source_lang=EN' \  # Optional but recommended
+--form 'output_format=docx'  # Optional: get DOCX instead of PDF
+Key Parameters:
+
+file: Your PDF file (required)
+target_lang: Target language code (required)
+source_lang: Source language code (optional but recommended)
+output_format: Can be 'pdf' (default) or 'docx' for editable output
+glossary_id: Optional glossary ID (requires source_lang)
+formality: Optional formality setting (default/more/less)
+
+Response Example:
+json{
+  "document_id": "04DE5AD98A02647D83285A36021911C6",
+  "document_key": "0CB0054F1C132C1625B392EADDA41CB754A742822F6877173029A6C487E7F60A"
+}
+Step 2: Check Translation Status
+Poll the status endpoint until translation completes:
+bashcurl -X POST 'https://api.deepl.com/v2/document/{document_id}' \
+--header 'Authorization: DeepL-Auth-Key [YOUR_AUTH_KEY]' \
+--header 'Content-Type: application/json' \
+--data '{
+  "document_key": "[DOCUMENT_KEY_FROM_STEP_1]"
+}'
+Status Values:
+
+queued: Translation pending
+translating: In progress (includes seconds_remaining estimate)
+done: Complete (includes billed_characters)
+error: Failed (includes error message)
+
+Polling Strategy: Check status every few seconds or use exponential backoff. Small PDFs typically complete in seconds, larger ones in 1-2 minutes.
+Step 3: Download Translated PDF
+Once status is "done", download the result:
+bashcurl -X POST 'https://api.deepl.com/v2/document/{document_id}/result' \
+--header 'Authorization: DeepL-Auth-Key [YOUR_AUTH_KEY]' \
+--header 'Content-Type: application/json' \
+--data '{
+  "document_key": "[DOCUMENT_KEY_FROM_STEP_1]"
+}' \
+--output translated_document.pdf
+Important Notes:
+
+Translated documents are automatically deleted after download
+You cannot download the same document twice
+The uploaded source document is also deleted after translation completes
+
+PDF-Specific Features
+
+Format Conversion: PDFs can be translated to DOCX format for editing by setting output_format=docx in Step 1
+Billing: All PDFs incur a minimum 50,000 character charge
+File Size: Check your plan's maximum upload limits for PDFs
+
+Error Handling
+Common PDF translation errors:
+
+File too large for your plan
+Unsupported PDF format/encoding
+Source and target languages are the same
+Invalid authentication key
+
+Always implement proper error handling and retry logic for production use.
+
+This guide provides everything needed to translate PDFs specifically, including the unique PDF-to-DOCX conversion option and billing considerations.

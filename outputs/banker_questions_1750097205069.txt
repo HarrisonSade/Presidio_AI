@@ -1,0 +1,54 @@
+Banker Questions Generated from CIM
+Generated on: 2025-06-16T18:06:45.069Z
+Original file: TurboPassIntroDeck.pdf
+=====================================
+
+1. What explains the significant jump from $14M run-rate revenue (April 2025) to projected $66M by 2034? Please provide detailed assumptions and milestones for this growth trajectory.
+
+2. How sustainable is the 85%+ gross margin given increasing data provider costs and potential pricing pressure as the market matures?
+
+3. What are the specific "one-time items" referenced in the pro forma EBITDA adjustment from $7.4M to $8.3M?
+
+4. Can you provide monthly cohort revenue retention data for the past 24 months to validate the recurring revenue quality?
+
+5. What is the actual cash collection cycle, and how does the "negative working capital model" work in practice?
+
+6. With 60%+ of customers coming through DealerCenter, what are the specific terms of this partnership agreement, including exclusivity, termination rights, and revenue sharing?
+
+7. What happens to verification requests when automated systems fail? What percentage require manual intervention and at what cost?
+
+8. How defensible is the $125-$700/month pricing model as competitors enter with potentially aggressive pricing strategies?
+
+9. What prevents major lenders like Ally or Santander from building their own verification systems and cutting out TurboPass as a middleman?
+
+10. How do you maintain the "first-mover advantage" when established players like Equifax or TransUnion could leverage their existing relationships to enter this market?
+
+11. What is preventing direct integration between data providers (Plaid, MX, Truv) and lenders, bypassing TurboPass entirely?
+
+12. What evidence supports the TAM expansion into RV/Marine ($118M), Personal Loans ($84M), and Property Rental ($314M) markets beyond automotive?
+
+13. Have you conducted any pilots in these expansion verticals? What were the results and customer feedback?
+
+14. What happens if Westlake Financial, as your largest shareholder and customer, decides to build an in-house solution or acquire a competitor?
+
+15. How do you handle state-by-state licensing requirements for financial services, and what states are you currently not operating in due to regulatory constraints?
+
+16. What is your cyber insurance coverage, and have you experienced any data breaches or security incidents to date?
+
+17. Can you provide customer concentration data - what percentage of revenue comes from your top 10 dealers and top 5 lenders?
+
+18. What is the actual month-over-month churn rate for dealers, and what are the primary reasons for customer departures?
+
+19. How sticky are the lender relationships given they don't pay for the service directly? What prevents them from mandating dealers use alternative solutions?
+
+20. What happens if any of your critical data providers (Plaid, MX, Truv, Mitek) terminate their agreements or significantly raise prices?
+
+21. Can your current technology infrastructure handle 10x growth without significant capital investment? What are the scaling bottlenecks?
+
+22. Who owns the IP for the platform, and are there any disputes or claims from former employees or contractors?
+
+23. How do you ensure compliance with Fair Credit Reporting Act (FCRA) requirements given you're handling sensitive consumer financial data?
+
+24. What is your exposure to consumer class action lawsuits related to data privacy or unauthorized credit checks?
+
+25. Are there any earnout provisions tied to achieving the aggressive growth projections, and what protections exist for the buyer if key partnerships (especially DealerCenter) terminate post-close?

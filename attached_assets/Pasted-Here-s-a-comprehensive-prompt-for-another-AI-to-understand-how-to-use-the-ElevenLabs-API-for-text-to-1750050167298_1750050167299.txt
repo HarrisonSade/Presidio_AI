@@ -1,0 +1,144 @@
+Here's a comprehensive prompt for another AI to understand how to use the ElevenLabs API for text-to-speech:
+
+ElevenLabs API Text-to-Speech Guide
+Convert text into natural-sounding speech using the ElevenLabs API with this straightforward process:
+Prerequisites
+
+ElevenLabs API key (xi-api-key)
+Voice ID (obtain from the Get voices endpoint)
+API endpoint: https://api.elevenlabs.io
+
+Basic Text-to-Speech Request
+Make a POST request to /v1/text-to-speech/{voice_id}:
+bashcurl -X POST "https://api.elevenlabs.io/v1/text-to-speech/JBFqnCBsd6RMkjVDRZzb" \
+     -H "xi-api-key: YOUR_API_KEY" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "text": "The first move is what sets everything in motion.",
+       "model_id": "eleven_multilingual_v2"
+     }' \
+     --output speech.mp3
+Required Parameters
+Path Parameter:
+
+voice_id: ID of the voice to use (required)
+
+Headers:
+
+xi-api-key: Your API authentication key (required)
+Content-Type: application/json
+
+Request Body:
+
+text: The text to convert to speech (required)
+
+Optional Parameters
+Model Selection:
+
+model_id: Default is "eleven_multilingual_v2"
+Use GET /v1/models to list available models
+Ensure model supports TTS via can_do_text_to_speech property
+
+Output Format:
+
+output_format: Specify in query parameter as ?output_format=format
+Format: codec_samplerate_bitrate (e.g., "mp3_44100_128")
+Common formats:
+
+mp3_44100_128 (default)
+mp3_44100_192 (Creator tier+)
+pcm_44100 (Pro tier+)
+ulaw_8000 (for Twilio)
+
+
+
+Language Control:
+
+language_code: ISO 639-1 code (e.g., "en", "es", "fr")
+Only supported by Turbo v2.5 and Flash v2.5 models
+
+Voice Settings Override:
+json"voice_settings": {
+  "stability": 0.5,
+  "similarity_boost": 0.75,
+  "style": 0.0,
+  "use_speaker_boost": true
+}
+Advanced Features
+1. Streaming Optimization:
+bashcurl -X POST "https://api.elevenlabs.io/v1/text-to-speech/{voice_id}?optimize_streaming_latency=3" \
+     -H "xi-api-key: YOUR_API_KEY" \
+     -H "Content-Type: application/json" \
+     -d '{"text": "Your text here"}'
+
+Values: 0 (default) to 4 (max optimization)
+Higher values reduce latency but may affect quality
+
+2. Context Continuity:
+For multi-part speech generation:
+json{
+  "text": "Current sentence.",
+  "previous_text": "What was said before.",
+  "next_text": "What will be said after.",
+  "previous_request_ids": ["request_id_1", "request_id_2"],
+  "next_request_ids": ["request_id_3"]
+}
+3. Deterministic Generation:
+json{
+  "text": "Your text",
+  "seed": 12345  // Integer 0-4294967295
+}
+4. Pronunciation Dictionaries:
+json{
+  "text": "Your text",
+  "pronunciation_dictionary_locators": [
+    {"id": "dict_id", "version_id": "version_id"}
+  ]
+}
+5. Text Normalization Control:
+json{
+  "text": "The year 2024",
+  "apply_text_normalization": "auto",  // "auto", "on", or "off"
+  "apply_language_text_normalization": false  // For Japanese support
+}
+Enterprise Features
+Zero Retention Mode:
+bashcurl -X POST "https://api.elevenlabs.io/v1/text-to-speech/{voice_id}?enable_logging=false"
+
+No history or request stitching available
+Enterprise customers only
+
+Complete Example
+bashcurl -X POST "https://api.elevenlabs.io/v1/text-to-speech/JBFqnCBsd6RMkjVDRZzb?output_format=mp3_44100_192" \
+     -H "xi-api-key: YOUR_API_KEY" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "text": "Welcome to our presentation. Today we will discuss artificial intelligence.",
+       "model_id": "eleven_multilingual_v2",
+       "voice_settings": {
+         "stability": 0.7,
+         "similarity_boost": 0.8
+       },
+       "seed": 42,
+       "apply_text_normalization": "auto"
+     }' \
+     --output presentation_intro.mp3
+Response Handling
+Success:
+
+Returns audio data in specified format
+Save directly to file using --output filename.mp3
+
+Error 422:
+
+Invalid parameters
+Unsupported model/voice combination
+Text normalization conflicts
+
+Best Practices
+
+Voice Selection: Test different voices for your use case
+Model Choice: Use multilingual models for non-English text
+Optimization: Balance latency vs quality based on needs
+Continuity: Use context parameters for multi-part generations
+Format: Choose output format based on your platform requirements
