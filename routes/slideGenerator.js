@@ -78,258 +78,247 @@ router.post('/api/slide-generator/generate-instructions', upload.single('cim'), 
 
 // Generate slide outline using Claude API
 async function generateSlideOutline(pdfBuffer, filename) {
-  const prompt = `You are creating a prompt for Genspark to build a 5-6 slide introductory deck. Your job is to extract specific content from the provided CIM and format it into extremely detailed instructions that Genspark can follow exactly.
-YOUR TASK: Generate a single Genspark prompt that includes:
+  const prompt = `OBJECTIVE: Extract maximum value from the CIM to create a content-rich 6-slide private equity intro deck. Focus on comprehensive information gathering, specific metrics, and detailed insights.
+SLIDE 1: COMPANY SNAPSHOT
+Extract ALL of the following from the CIM:
+Company Overview:
 
-Exact text/data extracted from the CIM
-Precise pixel-by-pixel layout instructions
-Specific color codes for every element
-Word-for-word content with character limits
+Complete business description including all service lines, products, and offerings
+Founding story, evolution, and key milestones with dates
+Current scale and market position
+Leadership team backgrounds and notable achievements
+Company culture, values, and differentiators
 
-GENSPARK PROMPT TEMPLATE TO GENERATE:
-CREATE PRIVATE EQUITY INTRO DECK FOR [COMPANY NAME]
+Key Metrics (include every metric mentioned):
 
-MANDATORY SPECIFICATIONS:
-- Canvas: Exactly 1920x1080px (16:9 ratio)
-- NO white borders - backgrounds must extend to all edges
-- NO overlapping elements - maintain 20px minimum spacing
-- Use 12-column grid (each column = 160px width)
+Revenue: Current year, prior years, growth rates
+Customer metrics: Total customers, growth rate, concentration
+Geographic footprint: Countries, states, cities served
+Employee count: Total, by function, by location
+Operational metrics: Transactions processed, units sold, utilization rates
+Market share and ranking
 
-SLIDE 1: COMPANY OVERVIEW
-Exact content from CIM:
-- Title text: "Company Overview" 
-- Company description: "[Extract 40-50 word description from CIM]"
-- Founded: [Year] | Headquarters: [City, State]
-- Business model: "[Extract exact 25-word description]"
+Competitive Advantages:
 
-Key metrics (extract exact values):
-- Metric 1: "[Label]: [Value]" (e.g., "Revenue: $32.7M")
-- Metric 2: "[Label]: [Value]" (e.g., "Customers: 23,000+")
-- Metric 3: "[Label]: [Value]" (e.g., "Growth: 577% YoY")
+Proprietary technology or processes
+Patents, certifications, licenses
+Strategic partnerships and exclusive relationships
+Awards, recognitions, and third-party validations
+Customer testimonials or case studies
 
-Three value props (15-20 words each):
-- [Extract specific differentiator 1]
-- [Extract specific differentiator 2]  
-- [Extract specific differentiator 3]
+Recent Momentum:
 
-Layout instructions:
-- Background: #F8F9FA full bleed to edges
-- Header zone (0-200px height):
-  - Title: 48pt Arial Bold, #1B3A5C, position at x:60px, y:80px
-  - Company logo: 180x60px at x:1680px, y:60px
-- Content zone (200-900px height):
-  - Left column (columns 1-7): Text content
-    - Description: 14pt Arial Regular, #2C3E50, x:60px, y:240px, max width:900px
-    - Founded/HQ: 12pt Arial Regular, #7F8C8D, x:60px, y:320px
-  - Right column (columns 8-12): Metric boxes
-    - 3 boxes, each 280x100px, starting x:1040px, y:240px, 40px vertical spacing
-    - Box background: #E8F4F8, border: 2px solid #D35400
-    - Metric text: 16pt Arial Bold, #1B3A5C
-  - Value props: x:60px, y:480px, width:900px, 14pt Arial Regular, #2C3E50
-    - Bullet points: #D35400 circles, 8px diameter
-    - Line height: 1.5x, paragraph spacing: 16px
+New product launches
+Geographic expansion
+Major customer wins
+Strategic hires
+Technology implementations
 
-SLIDE 2: MARKET OVERVIEW  
-Exact content from CIM:
-- Title text: "Market Overview"
-- Market size: "The [market name] market is valued at $[X]B and growing at [Y]% CAGR through [year]"
-- TAM: $[Value] | SAM: $[Value] | SOM: $[Value]
+SLIDE 2: MARKET OPPORTUNITY
+Comprehensive Market Analysis:
+Market Sizing:
 
-Growth drivers (4 bullets, each exactly 15-20 words):
-- [Extract driver 1 with specific percentage/number]
-- [Extract driver 2 with specific percentage/number]
-- [Extract driver 3 with specific percentage/number]
-- [Extract driver 4 with specific percentage/number]
+Total Addressable Market (TAM): Size, methodology, sources
+Serviceable Addressable Market (SAM): Rationale for accessibility
+Serviceable Obtainable Market (SOM): Realistic capture potential
+Market segmentation: By product, geography, customer type
+Growth rates: Historical (3-5 years) and projected (3-5 years)
 
-Market data for chart:
-- [Year 1]: $[Value]
-- [Year 2]: $[Value]
-- [Year 3]: $[Value]
-- [Year 4]: $[Value]
-- [Year 5]: $[Value]
+Market Drivers (extract every driver mentioned):
 
-Layout instructions:
-- Background: #F8F9FA full bleed
-- Header zone: Same as Slide 1
-- Content split 50/50:
-  - Left side (columns 1-6):
-    - Market size statement: 16pt Arial Semi-Bold, #1B3A5C, x:60px, y:240px
-    - TAM/SAM/SOM boxes: Three 240x80px boxes at y:320px, horizontal spacing 40px
-      - Background: White, border: 1px solid #DDE1E5
-    - Bullet points: x:60px, y:440px, width:700px
-  - Right side (columns 7-12):
-    - Chart area: x:980px, y:240px, width:880px, height:480px
-    - Chart type: Line graph with area fill
-    - Colors: Gradient from #1B3A5C (bottom) to #D35400 (top)
-    - Grid lines: #E8E8E8, 1px width
-    - Data labels: 11pt Arial Regular, #2C3E50
+Regulatory changes: Specific laws, compliance requirements, deadlines
+Technology disruptions: AI, automation, digital transformation impacts
+Demographic shifts: Population changes, generational preferences
+Economic factors: GDP growth, industry spending, budget allocations
+Social trends: Behavior changes, new needs emerging
+Industry consolidation: M&A activity, player exits
+
+Competitive Landscape:
+
+Number of competitors by tier
+Market fragmentation analysis
+Barriers to entry: Capital requirements, regulations, network effects
+Customer switching costs and loyalty factors
+Pricing dynamics and trends
+
+Timing Factors:
+
+Why this market is attractive now
+Inflection points or catalysts
+Time-sensitive opportunities
 
 SLIDE 3: COMPETITIVE POSITIONING
-Exact content from CIM:
-- Title text: "Competitive Positioning"
-- Market position: "[Company] is the [#X] largest player in [specific market segment]"
-- Market share: [X]% | Next competitor: [Y]%
+Detailed Competitive Analysis:
+Market Position:
 
-Customer profile (extract exact data):
-- Primary segment: [Description, 20 words]
-- Demographics: [Age range], [Gender split]%, [Geography]
-- Average contract value: $[Amount]
-- Retention rate: [X]%
+Market share: Exact percentage and ranking
+Share gains/losses over time
+Win rates against specific competitors
+Customer retention vs. industry average
 
-Key differentiators (3 items, 20-25 words each):
-1. [Extract specific competitive advantage]
-2. [Extract specific competitive advantage]
-3. [Extract specific competitive advantage]
+Head-to-Head Comparisons (specific metrics):
 
-Competitor comparison data:
-- [Company]: [Metric 1], [Metric 2], [Metric 3]
-- [Competitor 1]: [Metric 1], [Metric 2], [Metric 3]
-- [Competitor 2]: [Metric 1], [Metric 2], [Metric 3]
+Pricing: Absolute prices and relative positioning
+Features: Detailed capability comparison
+Performance: Speed, accuracy, reliability metrics
+Customer satisfaction: NPS, CSAT scores, reviews
+Financial performance: Growth rates, margins, profitability
 
-Layout instructions:
-- Three-section layout:
-  - Top section (y:200-400px): Market position statement and share metrics
-    - Position text: 18pt Arial Semi-Bold, #1B3A5C, centered
-    - Share boxes: Two 300x120px boxes, centered horizontally
-  - Middle section (y:400-600px): Customer profile in 4-column grid
-    - Each item in 400x150px box, white background
-  - Bottom section (y:600-900px): Comparison table
-    - Full width table, x:60px to x:1860px
-    - Header row: #1B3A5C background, white text, 14pt Bold
-    - Data rows: Alternating #FAFAFA and white
-    - Cell padding: 12px all sides
+Customer Analysis:
 
-SLIDE 4: FINANCIAL SNAPSHOT
-Exact content from CIM:
-- Title text: "Financial Snapshot"  
-- Revenue: [Year 1]: $[Amount] → [Year 2]: $[Amount] ([Growth]%)
-- EBITDA: $[Amount] ([Margin]%)
-- Gross Margin: [X]% | Operating Margin: [Y]%
+Demographics: Industry, size, geography, decision-makers
+Use cases: Primary, secondary, emerging
+Acquisition: Channels, costs, conversion rates
+Economics: LTV, CAC, payback period, churn
+Satisfaction: Scores, testimonials, case studies
+Concentration: Top 10, top 20 customer revenue %
 
-Key metrics grid (extract exact values):
-- LTV: $[Amount]
-- CAC: $[Amount]  
-- LTV/CAC: [Ratio]x
-- Payback: [X] months
-- MRR: $[Amount]
-- Churn: [X]%
+Moat Analysis:
 
-Revenue breakdown:
-- [Product/Segment 1]: [X]% ($[Amount])
-- [Product/Segment 2]: [Y]% ($[Amount])
-- [Product/Segment 3]: [Z]% ($[Amount])
+Network effects: User-to-user, data, social
+Switching costs: Technical, contractual, behavioral
+Scale advantages: Cost, distribution, brand
+Proprietary assets: Technology, data, relationships
 
-Historical financials for chart:
-- [Year-2]: Revenue $[Amount], EBITDA $[Amount]
-- [Year-1]: Revenue $[Amount], EBITDA $[Amount]
-- [Current]: Revenue $[Amount], EBITDA $[Amount]
+SLIDE 4: FINANCIAL PERFORMANCE
+Extract ALL Financial Information:
+Historical Performance (all available years):
 
-Layout instructions:
-- Four-quadrant layout:
-  - Top left (x:60-920px, y:200-500px): Revenue growth visualization
-    - Bar chart with growth line overlay
-  - Top right (x:1000-1860px, y:200-500px): Margin analysis
-    - Two semi-circular gauges for gross/operating margins
-  - Bottom left (x:60-920px, y:540-840px): Unit economics grid
-    - 6 metric boxes in 3x2 grid, each 260x120px
-  - Bottom right (x:1000-1860px, y:540-840px): Revenue breakdown
-    - Donut chart with percentages
+Revenue: By year, quarter if available
+Gross profit and margins
+EBITDA and margins
+Operating income and margins
+Free cash flow
+Working capital metrics
 
-SLIDE 5: KEY DILIGENCE AREAS
-Exact content from CIM gaps:
-- Title text: "Key Diligence Areas"
+Growth Analysis:
 
-Priority research areas (based on CIM analysis):
-1. Market Validation
-   • [Specific question about market size/growth claims]
-   • [Specific question about competitive dynamics]
-   • [Specific data point that needs verification]
+Year-over-year growth by metric
+CAGR for different time periods
+Organic vs. inorganic growth
+Volume vs. price contribution
 
-2. Financial Deep Dive
-   • [Question about revenue recognition/quality]
-   • [Question about unit economics sustainability]
-   • [Question about cash flow/working capital]
+Revenue Composition:
 
-3. Operational Assessment  
-   • [Question about scalability/capacity]
-   • [Question about technology/platform risk]
-   • [Question about key dependencies]
+By product line: Revenue and growth by segment
+By geography: Domestic vs. international split
+By customer type: Enterprise vs. SMB vs. consumer
+Recurring vs. transactional: Percentages and trends
+Contract length and renewal rates
 
-4. Customer Analysis
-   • [Question about concentration/churn]
-   • [Question about satisfaction/NPS]
-   • [Question about acquisition channels]
+Unit Economics (detailed):
 
-Timeline: [X] weeks estimated
+Customer acquisition cost by channel
+Lifetime value by segment
+Gross margin by product
+Contribution margin analysis
+Payback period trends
+Cohort behavior patterns
 
-Layout instructions:
-- Four equal boxes in 2x2 grid:
-  - Each box: 860x340px with 40px spacing
-  - Header: 20pt Arial Bold, #D35400
-  - Background: White with 1px #DDE1E5 border
-  - Bullets: 12pt Arial Regular, #2C3E50
-  - Sub-bullets: 11pt, indent 40px
-- Timeline bar at bottom: Full width, 60px height, #1B3A5C background
+Financial Quality Indicators:
 
-SLIDE 6: TRANSACTION CONSIDERATIONS
-Exact content from CIM:
-- Title text: "Transaction Considerations"
+Revenue recognition policies
+Bad debt/collections
+Seasonality patterns
+One-time vs. recurring items
+Capital requirements
 
-Key investment highlights (3 points, 25-30 words each):
-- [Extract main value driver from CIM]
-- [Extract growth opportunity from CIM]
-- [Extract competitive moat from CIM]
+SLIDE 5: INVESTMENT CONSIDERATIONS
+Comprehensive Diligence Framework:
+Market Validation Priorities:
 
-Primary risks identified:
-- [Risk 1 from CIM]: [Impact level]
-- [Risk 2 from CIM]: [Impact level]  
-- [Risk 3 from CIM]: [Impact level]
+TAM sizing methodology verification
+Growth driver sustainability assessment
+Competitive dynamics deep dive
+Customer reference checks needed
+Third-party market studies required
 
-Initial valuation considerations:
-- Revenue multiple range: [X]x - [Y]x
-- EBITDA multiple range: [X]x - [Y]x
-- Comparable transactions: [List 2-3 if mentioned]
+Financial Diligence Focus Areas:
 
-Next steps:
-1. [Immediate action item]
-2. [Immediate action item]
-3. [Immediate action item]
+Revenue quality analysis needs
+Margin sustainability drivers
+Working capital normalization
+Growth algorithm breakdown
+Unit economics verification
+Customer cohort analysis
+Churn and retention deep dive
 
-Layout instructions:
-- Two-column layout (60/40 split):
-  - Left column: Highlights and risks
-    - Highlights: Green accent (#27AE60) for bullet points
-    - Risks: Orange accent (#F39C12) for bullet points
-  - Right column: Valuation and next steps
-    - Valuation box: #E8F4F8 background
-    - Next steps: Numbered list with #1B3A5C numbers
+Operational Assessment Requirements:
 
-GLOBAL RULES FOR ALL SLIDES:
-- Page numbers: Bottom right, "X of 6" format, 10pt Arial Regular, #7F8C8D
-- Confidentiality notice: Bottom center, 8pt Arial Regular, #7F8C8D
-- All numerical data must be exactly as shown in CIM
-- Maximum 250 words per slide
-- Minimum 35% whitespace per slide
-- No overlapping elements - verify all spacing
+Technology platform evaluation
+Scalability stress testing
+Organization capability gaps
+Process maturity assessment
+Key person dependencies
+Capacity constraint analysis
+
+Strategic Questions to Answer:
+
+Organic growth acceleration potential
+M&A pipeline and integration capability
+International expansion readiness
+Product roadmap feasibility
+Partnership expansion opportunities
+Platform play potential
+
+Risk Factors Requiring Investigation:
+
+Regulatory changes on horizon
+Technology disruption threats
+Customer concentration issues
+Competitive response scenarios
+Execution risk factors
+Market timing sensitivities
+
+SLIDE 6: STRATEGIC SYNTHESIS
+Investment Thesis Construction:
+Core Value Proposition:
+
+Primary investment rationale
+Supporting evidence from CIM
+Unique advantages vs. other opportunities
+Value creation potential quantification
+
+Value Creation Roadmap (detailed):
+
+Revenue growth levers: New products, markets, channels
+Margin expansion: Pricing, mix, efficiency
+Operational improvements: Technology, process, organization
+Strategic initiatives: M&A, partnerships, platforms
+Timeline and sequencing
+Resource requirements
+Quick wins vs. long-term plays
+
+Risk Mitigation Strategy:
+
+Risk prioritization matrix
+Mitigation strategies by risk
+Monitoring mechanisms
+Contingency planning
+
+Exit Considerations:
+
+Strategic buyer universe and rationale
+Financial buyer interest factors
+IPO readiness requirements
+Optimal hold period analysis
+Value maximization timeline
+
+Success Factors:
+
+Critical milestones years 1-3
+Key hires needed
+Board composition requirements
+Partner/advisor needs
+
 EXTRACTION INSTRUCTIONS:
-When analyzing the CIM, you must:
 
-Pull exact numbers, percentages, and dates
-Quote company descriptions verbatim when under 50 words
-Extract specific competitive advantages, not generic statements
-Identify actual data gaps for diligence section
-Use precise terminology from the CIM
-Never approximate or round numbers
-Include currency symbols and units exactly as shown
-
-OUTPUT REQUIREMENTS:
-
-Generate one continuous prompt without placeholders
-Every element must have exact pixel coordinates
-All colors must use hex codes provided
-Each content piece must have character/word limits
-Spacing must be explicitly defined
-No subjective language or recommendations`;
+Be Exhaustive: Include every relevant data point, metric, and insight from the CIM
+Be Specific: Use exact numbers, not ranges or approximations
+Be Contextual: Include explanations and rationale behind metrics
+Be Comparative: Extract all benchmarks and relative performance data
+Be Temporal: Show progression over time for all metrics where available
+Be Strategic: Capture all growth options and value creation opportunities mentioned`;
 
   try {
     const response = await axios.post(
