@@ -14,6 +14,7 @@ const podcastRoutes = require('./routes/podcast');
 const bankerQuestionsRoutes= require('./routes/bankerQuestions');
 const NDAReviewRoutes = require('./routes/NDAReview');
 const contractWaterfallRoutes = require('./routes/contractWaterfall');
+const slideGeneratorRoutes = require('./routes/slideGenerator');
 
 
 // Use routes
@@ -24,6 +25,7 @@ app.use('/api/podcast', podcastRoutes);
 app.use('/', bankerQuestionsRoutes);
 app.use('/', NDAReviewRoutes);
 app.use('/', contractWaterfallRoutes);
+app.use('/', slideGeneratorRoutes);
 
 
 // Serve HTML pages
@@ -57,6 +59,10 @@ app.get('/NDAReview', (req, res) => {
 
 app.get('/contractWaterfall', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'ContractWaterfall.html'));
+});
+
+app.get('/slideGenerator', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'slideGenerator.html'));
 });
 
 // Start server

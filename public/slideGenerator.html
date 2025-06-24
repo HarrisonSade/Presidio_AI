@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slide Generator - Presidio Intelligence Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0e27;
+            min-height: 100vh;
+            color: white;
+        }
+
+        .header {
+            background: rgba(20, 25, 43, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(192, 93, 0, 0.2);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            height: 40px;
+            filter: brightness(0) invert(1);
+        }
+
+        .back-btn {
+            background: transparent;
+            border: 1px solid rgba(192, 93, 0, 0.5);
+            color: #c05d00;
+            padding: 10px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .back-btn:hover {
+            background: rgba(192, 93, 0, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .card {
+            background: rgba(20, 25, 43, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(192, 93, 0, 0.2);
+            border-radius: 20px;
+            padding: 50px;
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 300;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            text-align: center;
+            background: linear-gradient(135deg, #c05d00 0%, #ff7a00 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #8892b0;
+            font-size: 16px;
+            margin-bottom: 50px;
+            letter-spacing: 1px;
+        }
+
+        .upload-section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            border: 2px dashed rgba(192, 93, 0, 0.3);
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .upload-section h2 {
+            color: #c05d00;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        .upload-area {
+            border: 2px dashed rgba(192, 93, 0, 0.3);
+            border-radius: 15px;
+            padding: 60px 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.02);
+            margin-bottom: 1rem;
+        }
+
+        .upload-area:hover, .upload-area.dragover {
+            border-color: rgba(192, 93, 0, 0.6);
+            background: rgba(192, 93, 0, 0.05);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .browse-btn {
+            background: linear-gradient(135deg, #c05d00 0%, #ff7a00 100%);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 14px;
+            display: inline-block;
+            margin-top: 1rem;
+        }
+
+        .browse-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(192, 93, 0, 0.3);
+        }
+
+        .file-preview {
+            display: none;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 1rem;
+            border: 1px solid rgba(192, 93, 0, 0.2);
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .file-details h3 {
+            margin-bottom: 5px;
+        }
+
+        .file-details p {
+            color: #8892b0;
+            font-size: 14px;
+        }
+
+        .remove-btn {
+            background: transparent;
+            border: 1px solid rgba(220, 53, 69, 0.5);
+            color: #dc3545;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-left: auto;
+            transition: all 0.3s ease;
+            font-size: 0.8rem;
+        }
+
+        .remove-btn:hover {
+            background: rgba(220, 53, 69, 0.1);
+        }
+
+        .generate-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #c05d00 0%, #ff7a00 100%);
+            border: none;
+            padding: 16px;
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 1rem;
+        }
+
+        .generate-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(192, 93, 0, 0.4);
+        }
+
+        .generate-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .status {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            margin-top: 1rem;
+        }
+
+        .spinner {
+            border: 3px solid rgba(192, 93, 0, 0.3);
+            border-top: 3px solid #c05d00;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .results {
+            display: none;
+            margin-top: 2rem;
+            padding: 20px;
+            background: rgba(40, 167, 69, 0.1);
+            border: 1px solid rgba(40, 167, 69, 0.3);
+            border-radius: 10px;
+        }
+
+        .results h3 {
+            margin-bottom: 15px;
+            color: #28a745;
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 1rem;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        .error {
+            display: none;
+            background: rgba(220, 53, 69, 0.1);
+            border: 1px solid rgba(220, 53, 69, 0.3);
+            color: #ff6b6b;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-top: 1rem;
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            position: relative;
+        }
+
+        .step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 60%;
+            width: 80%;
+            height: 2px;
+            background: rgba(192, 93, 0, 0.3);
+            z-index: 1;
+        }
+
+        .step.active:not(:last-child)::after {
+            background: rgba(192, 93, 0, 0.8);
+        }
+
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            position: relative;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+
+        .step.pending .step-circle {
+            background: rgba(192, 93, 0, 0.2);
+            border: 2px solid rgba(192, 93, 0, 0.5);
+            color: #8892b0;
+        }
+
+        .step.active .step-circle {
+            background: linear-gradient(135deg, #c05d00 0%, #ff7a00 100%);
+            color: white;
+            box-shadow: 0 0 20px rgba(192, 93, 0, 0.5);
+        }
+
+        .step.completed .step-circle {
+            background: #28a745;
+            color: white;
+        }
+
+        .step-label {
+            margin-top: 10px;
+            font-size: 12px;
+            text-align: center;
+            color: #8892b0;
+            font-weight: 500;
+        }
+
+        .step.active .step-label {
+            color: #c05d00;
+        }
+
+        .step.completed .step-label {
+            color: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo-section">
+                <img src="presidio-logo.png" alt="Presidio Investors" class="logo">
+            </div>
+            <a href="/dashboard.html" class="back-btn">← Back to Dashboard</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <h1>Slide Deck Instructions Generator</h1>
+            <p class="subtitle">Generate slide deck instructions from CIM executive summaries using Claude AI</p>
+
+            <div class="progress-steps">
+                <div class="step pending" id="step1">
+                    <div class="step-circle">1</div>
+                    <div class="step-label">Upload CIM</div>
+                </div>
+                <div class="step pending" id="step2">
+                    <div class="step-circle">2</div>
+                    <div class="step-label">AI Analysis</div>
+                </div>
+                <div class="step pending" id="step3">
+                    <div class="step-circle">3</div>
+                    <div class="step-label">Display Instructions</div>
+                </div>
+            </div>
+
+            <div class="upload-section">
+                <h2>📄 Upload CIM Executive Summary</h2>
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">📁</div>
+                    <h3>Drop CIM PDF file here or click to browse</h3>
+                    <p>Upload your Confidential Information Memorandum</p>
+                    <span class="browse-btn">Choose File</span>
+                    <input type="file" id="fileInput" class="file-input" accept=".pdf">
+                </div>
+                
+                <div class="file-preview" id="filePreview">
+                    <div class="file-info">
+                        <span>📄</span>
+                        <div class="file-details">
+                            <h3 id="fileName"></h3>
+                            <p id="fileSize"></p>
+                        </div>
+                        <button class="remove-btn" onclick="removeFile()">Remove</button>
+                    </div>
+                </div>
+            </div>
+
+            <button class="generate-btn" id="generateBtn" onclick="generateSlides()" disabled>
+                Generate Slide Instructions
+            </button>
+
+            <div class="error" id="error"></div>
+
+            <div class="status" id="status">
+                <div class="spinner"></div>
+                <p id="statusText">Processing CIM...</p>
+            </div>
+
+            <div class="results" id="results" style="display: none;">
+                <h3>✅ Slide Instructions Generated Successfully</h3>
+                <p>Copy the instructions below and use them with your preferred slide generation tool:</p>
+                
+                <div style="background: rgba(192, 93, 0, 0.1); border: 1px solid rgba(192, 93, 0, 0.3); border-radius: 10px; padding: 20px; margin: 1rem 0;">
+                    <h4 style="color: #ff7a00; margin-bottom: 15px;">📋 How to Use These Instructions</h4>
+                    <ol style="line-height: 1.8; color: #e6e6e6;">
+                        <li>Click the "Copy Instructions" button below to copy the generated slide instructions</li>
+                        <li>Go to <a href="https://genspark.ai" target="_blank" style="color: #ff7a00; text-decoration: underline;">GenSpark AI</a></li>
+                        <li>Log in with the following credentials:
+                            <div style="background: rgba(0, 0, 0, 0.3); padding: 10px; border-radius: 5px; margin: 10px 0;">
+                                <strong>Username:</strong> <code style="color: #ff7a00;">dylan@presidioinvestors.com</code><br>
+                                <strong>Password:</strong> <code style="color: #ff7a00;">presidio_pass123</code>
+                            </div>
+                        </li>
+                        <li>Navigate to the slide generation tool</li>
+                        <li>Paste the instructions in the input field</li>
+                        <li>Generate your slide deck</li>
+                    </ol>
+                </div>
+                
+                <div id="instructionsContainer" style="background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(192, 93, 0, 0.3); border-radius: 10px; padding: 20px; margin-top: 1rem; max-height: 600px; overflow-y: auto;">
+                    <pre id="instructionsText" style="white-space: pre-wrap; word-wrap: break-word; color: #e6e6e6; font-size: 14px; line-height: 1.6;"></pre>
+                </div>
+                <button class="download-btn" onclick="copyInstructions()" style="margin-top: 1rem;">Copy Instructions</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check authentication
+        if (sessionStorage.getItem('presidio_authenticated') !== 'true') {
+            window.location.href = '/';
+        }
+
+        let selectedFile = null;
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const filePreview = document.getElementById('filePreview');
+        const generateBtn = document.getElementById('generateBtn');
+        const error = document.getElementById('error');
+        const status = document.getElementById('status');
+        const statusText = document.getElementById('statusText');
+        const results = document.getElementById('results');
+        const downloadBtn = document.getElementById('downloadBtn');
+
+        // Upload area interactions
+        uploadArea.addEventListener('click', () => fileInput.click());
+        
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0 && files[0].type === 'application/pdf') {
+                handleFile(files[0]);
+            } else {
+                showError('Please upload a PDF file');
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
+        function handleFile(file) {
+            selectedFile = file;
+            document.getElementById('fileName').textContent = file.name;
+            document.getElementById('fileSize').textContent = formatFileSize(file.size);
+            filePreview.style.display = 'block';
+            generateBtn.disabled = false;
+            hideError();
+            resetProgress();
+        }
+
+        function removeFile() {
+            selectedFile = null;
+            filePreview.style.display = 'none';
+            generateBtn.disabled = true;
+            fileInput.value = '';
+            results.style.display = 'none';
+            resetProgress();
+        }
+
+        function resetProgress() {
+            document.querySelectorAll('.step').forEach(step => {
+                step.className = 'step pending';
+            });
+        }
+
+        function updateProgress(stepNum, state) {
+            const step = document.getElementById(`step${stepNum}`);
+            step.className = `step ${state}`;
+            if (state === 'completed') {
+                step.querySelector('.step-circle').innerHTML = '✓';
+            }
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function showError(message) {
+            error.textContent = message;
+            error.style.display = 'block';
+            setTimeout(hideError, 5000);
+        }
+
+        function hideError() {
+            error.style.display = 'none';
+        }
+
+        async function generateSlides() {
+            if (!selectedFile) {
+                showError('Please select a CIM PDF file first');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('cim', selectedFile);
+
+            try {
+                status.style.display = 'block';
+                results.style.display = 'none';
+                generateBtn.disabled = true;
+                generateBtn.textContent = 'Generating...';
+
+                // Step 1: Upload CIM
+                updateProgress(1, 'active');
+                statusText.textContent = 'Uploading and analyzing CIM...';
+
+                // Step 2: AI Analysis
+                updateProgress(1, 'completed');
+                updateProgress(2, 'active');
+                statusText.textContent = 'Claude AI analyzing content and generating slide instructions...';
+
+                const response = await fetch('/api/slide-generator/generate-instructions', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Instructions generation failed');
+                }
+
+                // Step 3: Display Instructions
+                updateProgress(2, 'completed');
+                updateProgress(3, 'active');
+                statusText.textContent = 'Preparing instructions...';
+
+                // Complete
+                updateProgress(3, 'completed');
+
+                status.style.display = 'none';
+                results.style.display = 'block';
+
+                // Display the instructions
+                document.getElementById('instructionsText').textContent = data.instructions;
+
+            } catch (error) {
+                console.error('Error:', error);
+                showError('Generation failed: ' + error.message);
+                status.style.display = 'none';
+                resetProgress();
+            } finally {
+                generateBtn.disabled = false;
+                generateBtn.textContent = 'Generate Slide Instructions';
+            }
+        }
+
+        function copyInstructions() {
+            const instructionsText = document.getElementById('instructionsText').textContent;
+            navigator.clipboard.writeText(instructionsText).then(() => {
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = 'Copied!';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 2000);
+            }).catch(err => {
+                showError('Failed to copy instructions');
+            });
+        }
+    </script>
+</body>
+</html>

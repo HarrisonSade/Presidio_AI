@@ -131,3 +131,21 @@ dist
 
 # Replit debugger
 .breakpoints
+
+# Project-specific directories
+uploads/
+outputs/
+data/
+temp/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Temporary files
+*.tmp
+*.temp
