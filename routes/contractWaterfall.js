@@ -237,7 +237,11 @@ Please extract these exact metrics from the contract. For each metric:
 - For dates, use MM/DD/YYYY format
 - For percentages, return as decimal (e.g., 0.15 for 15%)
 
-Return your response as a JSON object with keys matching the metric names EXACTLY as provided above (without any leading hyphens or bullets).
+Additionally, extract the amendment history if present. The amendment history should capture all rate changes, date modifications, and status updates throughout the contract lifecycle.
+
+IMPORTANT: For the Amendment_History field, format it as a readable multi-line string with each amendment on a separate line, using the format: "Date Range | Rate | Status"
+
+Return your response as a JSON object with keys matching the metric names EXACTLY as provided above (without any leading hyphens or bullets), plus an "Amendment_History" field containing a formatted string.
 
 Example response format:
 {
@@ -245,8 +249,13 @@ Example response format:
   "Transaction Value": 5000000,
   "Closing Date": "12/31/2023",
   "Revenue Multiple": 2.5,
-  "EBITDA": 1000000
-}`;
+  "EBITDA": 1000000,
+  "Amendment_History": "4/1/2025 - 8/29/2025 | $95.83 Hourly | Active\n3/1/2025 - 3/31/2025 | $95.83 Hourly | Expired\n9/1/2024 - 2/28/2025 | $95.83 Hourly | Expired\n6/6/2024 - 8/31/2024 | $95.83 Hourly | Expired"
+}
+
+Format each amendment line as: "Date Range | $Rate Rate_Type | Status"
+Use \n (newline) characters to separate each amendment.
+If no amendment history is found, set "Amendment_History" to "No amendment history found".`;
 
   try {
     console.log('Calling Claude API for:', filename);
