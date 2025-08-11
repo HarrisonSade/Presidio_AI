@@ -247,7 +247,7 @@ Generate insightful, specific questions that would help assess the investment op
     const response = await axios.post(
       'https://api.anthropic.com/v1/messages',
       {
-        model: 'claude-opus-4-20250514',
+        model: 'claude-3-opus-20240229',
         max_tokens: 4000,
         messages: [{
           role: 'user',
@@ -265,7 +265,8 @@ Generate insightful, specific questions that would help assess the investment op
           'Content-Type': 'application/json',
           'x-api-key': ANTHROPIC_API_KEY,
           'anthropic-version': '2023-06-01'
-        }
+        },
+        timeout: 180000 // 3 minutes timeout
       }
     );
 
@@ -382,7 +383,7 @@ Focus on specific documents, data exports, and reports. Avoid analytical questio
     const response = await axios.post(
       'https://api.anthropic.com/v1/messages',
       {
-        model: 'claude-opus-4-20250514',
+        model: 'claude-3-opus-20240229',
         max_tokens: 4000,
         messages: [{
           role: 'user',
@@ -400,7 +401,8 @@ Focus on specific documents, data exports, and reports. Avoid analytical questio
           'Content-Type': 'application/json',
           'x-api-key': ANTHROPIC_API_KEY,
           'anthropic-version': '2023-06-01'
-        }
+        },
+        timeout: 180000 // 3 minutes timeout
       }
     );
 

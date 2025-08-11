@@ -3,8 +3,27 @@ const path = require('path');
 const app = express();
 
 // Middleware
-app.use(express.json());
+app.use(express.json({ limit: '50mb' })); // Increase JSON payload limit
+app.use(express.urlencoded({ extended: true, limit: '50mb' })); // Support form data
 app.use(express.static(path.join(__dirname, 'public')));
+
+// CORS configuration
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(200);
+  } else {
+    next();
+  }
+});
+
+// Request logging middleware
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
+  next();
+});
 
 // Import routes
 const authRoutes = require('./routes/auth');
@@ -19,7 +38,7 @@ const slideGeneratorRoutes = require('./routes/slideGenerator');
 
 // Use routes
 app.use('/api/auth', authRoutes);
-app.use('/api', primerRoutes);
+app.use('/', primerRoutes);
 app.use('/api/ic-summary', icSummaryRoutes);
 app.use('/api/podcast', podcastRoutes);
 app.use('/', bankerQuestionsRoutes);

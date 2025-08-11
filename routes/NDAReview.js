@@ -139,7 +139,7 @@ Return JSON with this EXACT structure:
     const response = await axios.post(
       'https://api.anthropic.com/v1/messages',
       {
-        model: 'claude-opus-4-20250514',
+        model: 'claude-3-opus-20240229',
         max_tokens: 4000,
         messages: [{
           role: 'user',
@@ -162,7 +162,8 @@ Return JSON with this EXACT structure:
           'Content-Type': 'application/json',
           'x-api-key': ANTHROPIC_API_KEY,
           'anthropic-version': '2023-06-01'
-        }
+        },
+        timeout: 180000 // 3 minutes timeout
       }
     );
 

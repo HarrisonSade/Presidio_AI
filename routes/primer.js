@@ -126,8 +126,9 @@ Start searching NOW and build from facts to insights.`;
         "x-api-key": apiKey,
         "anthropic-version": "2023-06-01"
       },
+      timeout: 180000, // 3 minutes timeout
       body: JSON.stringify({
-        model: "claude-opus-4-20250514",  // Back to Opus 4 - it supports web search!
+        model: "claude-3-opus-20240229",  // Claude 3 Opus with web search support
         max_tokens: 2500,
         tools: [{
           type: "web_search_20250305",
@@ -183,7 +184,16 @@ Start searching NOW and build from facts to insights.`;
     }
 
   } catch (error) {
-    res.status(500).json({ error: "Failed to generate primer: " + error.message });
+    console.error('Primer generation error:', error);
+    let errorMessage = "Failed to generate primer";
+    if (error.name === 'TimeoutError') {
+      errorMessage = "Request timed out. Please try again.";
+    } else if (error.response) {
+      errorMessage = `API Error: ${error.response.status} - ${error.response.statusText}`;
+    } else if (error.message) {
+      errorMessage = error.message;
+    }
+    res.status(500).json({ error: errorMessage });
   }
 });
 

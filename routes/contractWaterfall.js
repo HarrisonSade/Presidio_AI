@@ -263,7 +263,7 @@ If no amendment history is found, set "Amendment_History" to "No amendment histo
     const response = await axios.post(
       'https://api.anthropic.com/v1/messages',
       {
-        model: 'claude-opus-4-20250514',
+        model: 'claude-3-opus-20240229',
         max_tokens: 2000,
         messages: [{
           role: 'user',
@@ -287,7 +287,7 @@ If no amendment history is found, set "Amendment_History" to "No amendment histo
           'x-api-key': ANTHROPIC_API_KEY,
           'anthropic-version': '2023-06-01'
         },
-        timeout: 30000
+        timeout: 180000 // 3 minutes timeout
       }
     );
 
