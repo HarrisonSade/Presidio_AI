@@ -5,6 +5,7 @@ const fs = require('fs').promises;
 const path = require('path');
 const FormData = require('form-data');
 const axios = require('axios');
+const pdfParse = require('pdf-parse');
 
 // API Keys - use environment variables or fallback to hardcoded
 const DEEPL_API_KEY = process.env.DEEPL_API_KEY || "aa20d81d-9606-4910-8e58-4c7f957c48dc";
@@ -28,18 +29,26 @@ const upload = multer({
 
 // Main generate endpoint - complete pipeline
 router.post('/generate', upload.single('pdf'), async (req, res) => {
+  console.log('Received podcast generation request');
+  
   if (!req.file) {
+    console.error('No file uploaded');
     return res.status(400).json({ error: 'No file uploaded' });
   }
+
+  console.log(`File uploaded: ${req.file.originalname}, size: ${req.file.size} bytes`);
 
   try {
     console.log('Starting PDF podcast generation pipeline...');
 
     // Step 1: Translate PDF with DeepL
-    console.log('Step 1: Translating PDF...');
+    console.log('Step 1: Translating PDF with DeepL...');
     const { document_id, document_key } = await uploadPDFToDeepL(req.file.path);
+    console.log(`DeepL document uploaded - ID: ${document_id}`);
+    
     await waitForTranslation(document_id, document_key);
     const translatedPDF = await downloadTranslatedPDF(document_id, document_key);
+    console.log('PDF translation completed successfully');
 
     // Save translated PDF
     const translatedPdfFilename = `translated_${Date.now()}.pdf`;
@@ -79,12 +88,30 @@ router.post('/generate', upload.single('pdf'), async (req, res) => {
 
   } catch (error) {
     console.error('Pipeline error:', error);
+    console.error('Error stack:', error.stack);
+    
     // Clean up uploaded file on error
     if (req.file) {
       await fs.unlink(req.file.path).catch(() => {});
     }
-    res.status(500).json({ 
-      error: `Failed to generate podcast: ${error.message}` 
+    
+    // Provide more specific error messages
+    let errorMessage = 'Failed to generate podcast';
+    let statusCode = 500;
+    
+    if (error.message.includes('DeepL')) {
+      errorMessage = 'Translation service error: ' + error.message;
+    } else if (error.message.includes('Claude')) {
+      errorMessage = 'AI content generation error: ' + error.message;
+    } else if (error.message.includes('ElevenLabs')) {
+      errorMessage = 'Audio generation error: ' + error.message;
+    } else {
+      errorMessage = 'Server error: ' + error.message;
+    }
+    
+    res.status(statusCode).json({ 
+      error: errorMessage,
+      details: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });
   }
 });
@@ -119,10 +146,12 @@ async function uploadPDFToDeepL(filePath) {
 
   } catch (error) {
     if (error.response) {
-      console.error('DeepL error:', error.response.data);
-      throw new Error(`DeepL upload failed: ${error.response.data.message}`);
+      console.error('DeepL error response:', error.response.status, error.response.data);
+      const errorMsg = error.response.data?.message || error.response.statusText || 'Unknown error';
+      throw new Error(`DeepL upload failed: ${errorMsg}`);
     }
-    throw error;
+    console.error('DeepL upload error:', error.message);
+    throw new Error(`DeepL upload failed: ${error.message}`);
   }
 }
 
@@ -199,8 +228,21 @@ async function downloadTranslatedPDF(documentId, documentKey) {
 // Step 2: Generate content with Claude
 async function generateContentWithClaude(pdfBuffer) {
   try {
-    // Convert PDF to base64
-    const pdfBase64 = pdfBuffer.toString('base64');
+    // Parse PDF to extract text
+    console.log('Parsing PDF for text extraction...');
+    const pdfData = await pdfParse(pdfBuffer);
+    const pdfText = pdfData.text;
+    console.log(`Extracted ${pdfText.length} characters from PDF`);
+
+    if (!pdfText || pdfText.length < 100) {
+      throw new Error('PDF text extraction failed or document is too short');
+    }
+
+    // Truncate text if it's too long for the API
+    const maxTextLength = 150000; // Claude can handle ~200k tokens, this is safe
+    const documentText = pdfText.length > maxTextLength 
+      ? pdfText.substring(0, maxTextLength) + '\n\n[Document truncated due to length...]'
+      : pdfText;
 
     const prompt = `Please analyze this translated document and provide:
 
@@ -225,27 +267,19 @@ SUMMARY:
 [Your detailed summary here]
 
 ---SCRIPT---
-[Your podcast script here]`;
+[Your podcast script here]
+
+Document content:
+${documentText}`;
 
     const response = await axios.post(
       'https://api.anthropic.com/v1/messages',
       {
-        model: 'claude-opus-4-20250514',
+        model: 'claude-3-opus-20240229',
         max_tokens: 4000,
         messages: [{
           role: 'user',
-          content: [{
-            type: 'document',
-            source: {
-              type: 'base64',
-              media_type: 'application/pdf',
-              data: pdfBase64
-            }
-          },
-          {
-            type: 'text',
-            text: prompt
-          }]
+          content: prompt
         }]
       },
       {
@@ -283,10 +317,12 @@ SUMMARY:
 
   } catch (error) {
     if (error.response) {
-      console.error('Claude API error:', error.response.data);
-      throw new Error(`Claude API failed: ${error.response.data.error?.message || error.response.statusText}`);
+      console.error('Claude API error response:', error.response.status, error.response.data);
+      const errorMsg = error.response.data?.error?.message || error.response.data?.message || error.response.statusText || 'Unknown error';
+      throw new Error(`Claude API failed: ${errorMsg}`);
     }
-    throw error;
+    console.error('Claude API error:', error.message);
+    throw new Error(`Claude API failed: ${error.message}`);
   }
 }
 
@@ -328,10 +364,15 @@ async function generateAudioWithElevenLabs(script) {
 
   } catch (error) {
     if (error.response) {
-      console.error('ElevenLabs API error:', error.response.status);
-      throw new Error(`ElevenLabs API failed: ${error.response.statusText}`);
+      console.error('ElevenLabs API error:', error.response.status, error.response.statusText);
+      if (error.response.data) {
+        console.error('ElevenLabs error details:', error.response.data);
+      }
+      const errorMsg = error.response.data?.detail?.message || error.response.statusText || 'Unknown error';
+      throw new Error(`ElevenLabs API failed: ${errorMsg}`);
     }
-    throw error;
+    console.error('ElevenLabs error:', error.message);
+    throw new Error(`ElevenLabs API failed: ${error.message}`);
   }
 }
 
