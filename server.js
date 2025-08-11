@@ -65,8 +65,30 @@ app.get('/slideGenerator', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'slideGenerator.html'));
 });
 
+// Add 404 handler for debugging
+app.use((req, res, next) => {
+  console.log(`404 - Route not found: ${req.method} ${req.path}`);
+  res.status(404).json({ 
+    error: 'Route not found',
+    path: req.path,
+    method: req.method 
+  });
+});
+
+// Add error handler
+app.use((err, req, res, next) => {
+  console.error('Server error:', err);
+  res.status(500).json({ 
+    error: 'Internal server error',
+    message: err.message 
+  });
+});
+
 // Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Presidio Intelligence Platform running on port ${PORT}`);
+  console.log('Routes registered:');
+  console.log('- /api/podcast/generate');
+  console.log('- /api/podcast/download/:filename');
 });
