@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const axios = require('axios');
 const fs = require('fs').promises;
 const path = require('path');
 
@@ -119,30 +120,27 @@ Remember: This is a REAL meeting. Use web search aggressively to find accurate, 
 Start searching NOW and build from facts to insights.`;
 
   try {
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01"
-      },
-      timeout: 180000, // 3 minutes timeout
-      body: JSON.stringify({
-        model: "claude-3-opus-20240229",  // Claude 3 Opus with web search support
+    const response = await axios.post(
+      "https://api.anthropic.com/v1/messages",
+      {
+        model: "claude-3-opus-20240229",
         max_tokens: 2500,
-        tools: [{
-          type: "web_search_20250305",
-          name: "web_search",
-          max_uses: 15  // Allow plenty of searches for thorough research
-        }],
         messages: [{
           role: "user",
           content: prompt
         }]
-      })
-    });
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": apiKey,
+          "anthropic-version": "2023-06-01"
+        },
+        timeout: 180000
+      }
+    );
 
-    const data = await response.json();
+    const data = response.data;
 
     if (data.error) {
       res.status(400).json({ error: data.error.message });

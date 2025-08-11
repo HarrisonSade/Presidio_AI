@@ -6,6 +6,7 @@ const path = require('path');
 const axios = require('axios');
 const XLSX = require('xlsx');
 const { v4: uuidv4 } = require('uuid');
+const pdfParse = require('pdf-parse');
 
 // API Key configuration
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY || "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";
@@ -259,6 +260,22 @@ If no amendment history is found, set "Amendment_History" to "No amendment histo
 
   try {
     console.log('Calling Claude API for:', filename);
+    
+    // Parse PDF to extract text
+    console.log('Parsing PDF for text extraction...');
+    const pdfData = await pdfParse(pdfBuffer);
+    const pdfText = pdfData.text;
+    console.log(`Extracted ${pdfText.length} characters from PDF`);
+    
+    if (!pdfText || pdfText.length < 100) {
+      throw new Error('PDF text extraction failed or document is too short');
+    }
+    
+    // Truncate text if it's too long
+    const maxTextLength = 150000;
+    const documentText = pdfText.length > maxTextLength 
+      ? pdfText.substring(0, maxTextLength) + '\n\n[Document truncated due to length...]'
+      : pdfText;
 
     const response = await axios.post(
       'https://api.anthropic.com/v1/messages',
@@ -267,18 +284,7 @@ If no amendment history is found, set "Amendment_History" to "No amendment histo
         max_tokens: 2000,
         messages: [{
           role: 'user',
-          content: [{
-            type: 'document',
-            source: {
-              type: 'base64',
-              media_type: 'application/pdf',
-              data: pdfBuffer.toString('base64')
-            }
-          },
-          {
-            type: 'text',
-            text: prompt
-          }]
+          content: `${prompt}\n\nDocument content:\n${documentText}`
         }]
       },
       {

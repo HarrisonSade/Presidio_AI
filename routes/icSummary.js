@@ -3,6 +3,8 @@ const router = express.Router();
 const multer = require('multer');
 const fs = require('fs').promises;
 const path = require('path');
+const axios = require('axios');
+const pdfParse = require('pdf-parse');
 
 // Ensure uploads directory exists
 async function ensureUploadsDir() {
@@ -42,8 +44,21 @@ router.post('/generate', upload.single('pdf'), async (req, res) => {
     // Read the PDF file as buffer
     const pdfBuffer = await fs.readFile(req.file.path);
 
-    // Convert to base64 for Claude API
-    const pdfBase64 = pdfBuffer.toString('base64');
+    // Parse PDF to extract text
+    console.log('Parsing PDF for text extraction...');
+    const pdfData = await pdfParse(pdfBuffer);
+    const pdfText = pdfData.text;
+    console.log(`Extracted ${pdfText.length} characters from PDF`);
+
+    if (!pdfText || pdfText.length < 100) {
+      throw new Error('PDF text extraction failed or document is too short');
+    }
+
+    // Truncate text if it's too long for the API
+    const maxTextLength = 150000;
+    const documentText = pdfText.length > maxTextLength 
+      ? pdfText.substring(0, maxTextLength) + '\n\n[Document truncated due to length...]'
+      : pdfText;
 
     // Delete the uploaded file after reading
     await fs.unlink(req.file.path);
@@ -155,44 +170,28 @@ Use web search to gather factual information on:
 
 Focus on factual summarization only. Do not provide investment opinions, recommendations, or subjective assessments.`;
 
-    // Call Claude API with PDF document
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01"
-      },
-      timeout: 180000, // 3 minutes timeout
-      body: JSON.stringify({
-        model: "claude-3-opus-20240229",  // Claude 3 Opus for comprehensive analysis
+    // Call Claude API with text content
+    const response = await axios.post(
+      "https://api.anthropic.com/v1/messages",
+      {
+        model: "claude-3-opus-20240229",
         max_tokens: 2500,
-        tools: [{
-          type: "web_search_20250305",
-          name: "web_search",
-          max_uses: 5  // Reduced searches for speed
-        }],
         messages: [{
           role: "user",
-          content: [
-            {
-              type: "document",
-              source: {
-                type: "base64",
-                media_type: "application/pdf",
-                data: pdfBase64
-              }
-            },
-            {
-              type: "text",
-              text: prompt
-            }
-          ]
+          content: `${prompt}\n\nDocument content:\n${documentText}`
         }]
-      })
-    });
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": apiKey,
+          "anthropic-version": "2023-06-01"
+        },
+        timeout: 180000
+      }
+    );
 
-    const data = await response.json();
+    const data = response.data;
 
     if (data.error) {
       res.status(400).json({ error: data.error.message });

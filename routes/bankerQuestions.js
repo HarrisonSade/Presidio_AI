@@ -6,6 +6,7 @@ const fsSync = require('fs');
 const axios = require('axios');
 const PDFDocument = require('pdfkit');
 const path = require('path');
+const pdfParse = require('pdf-parse');
 
 // API Key configuration
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY || "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";
@@ -44,13 +45,20 @@ router.post('/api/generate_banker_questions_pdf', upload.single('pdf'), async (r
     if (req.file) {
       uploadedFilePath = req.file.path;
       const pdfBuffer = await fs.readFile(uploadedFilePath);
+      
+      // Parse PDF to extract text
+      console.log('Parsing PDF for text extraction...');
+      const pdfData = await pdfParse(pdfBuffer);
+      const pdfText = pdfData.text;
+      console.log(`Extracted ${pdfText.length} characters from PDF`);
+      
+      if (!pdfText || pdfText.length < 100) {
+        throw new Error('PDF text extraction failed or document is too short');
+      }
+      
       content = {
-        type: 'document',
-        source: {
-          type: 'base64',
-          media_type: 'application/pdf',
-          data: pdfBuffer.toString('base64')
-        }
+        type: 'text',
+        text: pdfText
       };
     } else if (req.body.cimData) {
       content = {
@@ -104,13 +112,20 @@ router.post('/api/generate_basic_data_questions', upload.single('pdf'), async (r
     if (req.file) {
       uploadedFilePath = req.file.path;
       const pdfBuffer = await fs.readFile(uploadedFilePath);
+      
+      // Parse PDF to extract text
+      console.log('Parsing PDF for text extraction...');
+      const pdfData = await pdfParse(pdfBuffer);
+      const pdfText = pdfData.text;
+      console.log(`Extracted ${pdfText.length} characters from PDF`);
+      
+      if (!pdfText || pdfText.length < 100) {
+        throw new Error('PDF text extraction failed or document is too short');
+      }
+      
       content = {
-        type: 'document',
-        source: {
-          type: 'base64',
-          media_type: 'application/pdf',
-          data: pdfBuffer.toString('base64')
-        }
+        type: 'text',
+        text: pdfText
       };
     } else if (req.body.cimData) {
       content = {
@@ -251,13 +266,7 @@ Generate insightful, specific questions that would help assess the investment op
         max_tokens: 4000,
         messages: [{
           role: 'user',
-          content: [
-            content,
-            {
-              type: 'text',
-              text: prompt
-            }
-          ]
+          content: `${prompt}\n\nDocument content:\n${content.text}`
         }]
       },
       {
@@ -387,13 +396,7 @@ Focus on specific documents, data exports, and reports. Avoid analytical questio
         max_tokens: 4000,
         messages: [{
           role: 'user',
-          content: [
-            content,
-            {
-              type: 'text',
-              text: prompt
-            }
-          ]
+          content: `${prompt}\n\nDocument content:\n${content.text}`
         }]
       },
       {
