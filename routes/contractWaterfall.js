@@ -9,7 +9,10 @@ const { v4: uuidv4 } = require('uuid');
 const pdfParse = require('pdf-parse');
 
 // API Key configuration
-const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY || "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";
+const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
+if (!ANTHROPIC_API_KEY) {
+  throw new Error('ANTHROPIC_API_KEY environment variable is required');
+}
 
 // Configure multer for multiple file uploads
 const upload = multer({
@@ -280,8 +283,8 @@ If no amendment history is found, set "Amendment_History" to "No amendment histo
     const response = await axios.post(
       'https://api.anthropic.com/v1/messages',
       {
-        model: 'claude-3-opus-20240229',
-        max_tokens: 2000,
+        model: 'claude-3-5-sonnet-20241022',
+        max_tokens: 1500,
         messages: [{
           role: 'user',
           content: `${prompt}\n\nDocument content:\n${documentText}`

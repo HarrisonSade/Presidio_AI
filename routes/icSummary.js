@@ -64,7 +64,10 @@ router.post('/generate', upload.single('pdf'), async (req, res) => {
     await fs.unlink(req.file.path);
 
     // API Key
-    const apiKey = process.env.ANTHROPIC_API_KEY || "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";
+    const apiKey = process.env.ANTHROPIC_API_KEY;
+    if (!apiKey) {
+      throw new Error('ANTHROPIC_API_KEY environment variable is required');
+    }
 
     // Create prompt that will accompany the PDF
     const prompt = `You are a PE analyst creating a factual summary of an investment opportunity from a CIM. Provide objective information only - no opinions, recommendations, or subjective assessments.
@@ -174,7 +177,7 @@ Focus on factual summarization only. Do not provide investment opinions, recomme
     const response = await axios.post(
       "https://api.anthropic.com/v1/messages",
       {
-        model: "claude-3-opus-20240229",
+        model: "claude-3-5-sonnet-20241022",
         max_tokens: 2500,
         messages: [{
           role: "user",
