@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+require('dotenv').config();
 
 const fs = require('fs').promises;
 const path = require('path');
@@ -44,8 +45,8 @@ app.get("/api/history/:id", async (req, res) => {
 app.post("/api/generate", async (req, res) => {
   const { names, company, product } = req.body;
 
-  // YOUR API KEY - Replace with your actual API key
-  const apiKey = "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";
+  // Use API key from environment variable
+  const apiKey = process.env.ANTHROPIC_API_KEY;
 
   // Your exact prompt - EDIT THIS TO CHANGE WHAT CLAUDE SAYS
   const prompt = `You are an elite investment researcher with web search capabilities. Your job is to find REAL, ACCURATE information and create comprehensive meeting intelligence. Do not include sources or citations at all, until a section at the very end.

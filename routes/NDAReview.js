@@ -6,7 +6,7 @@ const axios = require('axios');
 const pdfParse = require('pdf-parse');
 
 // API Key configuration
-const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY || "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";
+const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 
 // Configure multer for file uploads
 const upload = multer({

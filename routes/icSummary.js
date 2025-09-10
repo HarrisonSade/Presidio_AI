@@ -64,7 +64,7 @@ router.post('/generate', upload.single('pdf'), async (req, res) => {
     await fs.unlink(req.file.path);
 
     // API Key
-    const apiKey = process.env.ANTHROPIC_API_KEY || "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";
+    const apiKey = process.env.ANTHROPIC_API_KEY;
 
     // Create prompt that will accompany the PDF
     const prompt = `You are a PE analyst creating a factual summary of an investment opportunity from a CIM. Provide objective information only - no opinions, recommendations, or subjective assessments.
