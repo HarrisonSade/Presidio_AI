@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
@@ -7,13 +8,10 @@ const pdfParse = require('pdf-parse');
 
 // API Key configuration
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
-<<<<<<< HEAD
-=======
+
 if (!ANTHROPIC_API_KEY) {
   throw new Error('ANTHROPIC_API_KEY environment variable is required');
 }
->>>>>>> 7ce945854c0a69970340796badd3201da9601a8e
-
 // Configure multer for file uploads
 const upload = multer({
   dest: 'uploads/',
