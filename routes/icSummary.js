@@ -7,9 +7,9 @@ const path = require('path');
 const axios = require('axios');
 const pdfParse = require('pdf-parse');
 
-// Ensure uploads directory exists
+// Ensure tmp directory exists (no-op on Vercel, but useful for local dev)
 async function ensureUploadsDir() {
-  const uploadsDir = path.join(__dirname, '..', 'uploads');
+  const uploadsDir = '/tmp';
   try {
     await fs.mkdir(uploadsDir, { recursive: true });
   } catch (error) {
@@ -19,7 +19,7 @@ async function ensureUploadsDir() {
 
 // Configure multer for file uploads
 const upload = multer({
-  dest: 'uploads/',
+  dest: '/tmp/',
   limits: {
     fileSize: 32 * 1024 * 1024 // 32MB limit (Claude's max request size)
   },

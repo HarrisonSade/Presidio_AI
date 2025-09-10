@@ -29,18 +29,22 @@ try {
   console.warn('   Please install Java from: https://www.java.com/download/\n');
 }
 
-// Create necessary directories
-const directories = ['uploads', 'logs', 'temp'];
+// Create necessary directories (skip on Vercel since filesystem is read-only)
+if (process.env.NODE_ENV !== 'production') {
+  const directories = ['uploads', 'logs', 'temp'];
 
-directories.forEach(dir => {
-  const dirPath = path.join(process.cwd(), dir);
-  if (!fs.existsSync(dirPath)) {
-    fs.mkdirSync(dirPath, { recursive: true });
-    console.log(`✅ Created directory: ${dir}/`);
-  } else {
-    console.log(`✅ Directory exists: ${dir}/`);
-  }
-});
+  directories.forEach(dir => {
+    const dirPath = path.join(process.cwd(), dir);
+    if (!fs.existsSync(dirPath)) {
+      fs.mkdirSync(dirPath, { recursive: true });
+      console.log(`✅ Created directory: ${dir}/`);
+    } else {
+      console.log(`✅ Directory exists: ${dir}/`);
+    }
+  });
+} else {
+  console.log('✅ Running in production - using /tmp for file operations');
+}
 
 // Create .env file if it doesn't exist
 const envPath = path.join(process.cwd(), '.env');

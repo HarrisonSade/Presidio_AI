@@ -15,7 +15,7 @@ if (!ANTHROPIC_API_KEY) {
 
 // Configure multer for file uploads
 const upload = multer({
-  dest: 'uploads/',
+  dest: '/tmp/',
   limits: {
     fileSize: 32 * 1024 * 1024, // 32MB per file
   },

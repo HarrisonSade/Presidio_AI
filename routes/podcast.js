@@ -25,7 +25,7 @@ if (!ELEVENLABS_API_KEY) {
 
 // Configure multer for file uploads
 const upload = multer({
-  dest: 'uploads/',
+  dest: '/tmp/',
   limits: {
     fileSize: 32 * 1024 * 1024 // 32MB limit
   },
@@ -63,8 +63,8 @@ router.post('/generate', upload.single('pdf'), async (req, res) => {
 
     // Save translated PDF
     const translatedPdfFilename = `translated_${Date.now()}.pdf`;
-    const translatedPdfPath = path.join('outputs', translatedPdfFilename);
-    await fs.mkdir('outputs', { recursive: true });
+    const translatedPdfPath = path.join('/tmp', translatedPdfFilename);
+    await fs.mkdir('/tmp', { recursive: true });
     await fs.writeFile(translatedPdfPath, translatedPDF);
 
     // Step 2: Generate summary and podcast script with Claude
@@ -73,7 +73,7 @@ router.post('/generate', upload.single('pdf'), async (req, res) => {
 
     // Save summary
     const summaryFilename = `summary_${Date.now()}.txt`;
-    const summaryPath = path.join('outputs', summaryFilename);
+    const summaryPath = path.join('/tmp', summaryFilename);
     await fs.writeFile(summaryPath, summary);
 
     // Step 3: Generate audio with ElevenLabs
@@ -82,7 +82,7 @@ router.post('/generate', upload.single('pdf'), async (req, res) => {
 
     // Save audio
     const audioFilename = `podcast_${Date.now()}.mp3`;
-    const audioPath = path.join('outputs', audioFilename);
+    const audioPath = path.join('/tmp', audioFilename);
     await fs.writeFile(audioPath, audioBuffer);
 
     // Clean up uploaded file
@@ -391,7 +391,7 @@ async function generateAudioWithElevenLabs(script) {
 router.get('/download/:filename', async (req, res) => {
   try {
     const filename = req.params.filename;
-    const filepath = path.join('outputs', filename);
+    const filepath = path.join('/tmp', filename);
 
     // Check if file exists
     await fs.access(filepath);

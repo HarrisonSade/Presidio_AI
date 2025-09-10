@@ -14,7 +14,7 @@ const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY || "sk-ant-api03-elzgY5C
 
 // Configure multer for file uploads
 const upload = multer({
-  dest: 'uploads/',
+  dest: '/tmp/',
   limits: {
     fileSize: 32 * 1024 * 1024 // 32MB limit
   },
@@ -27,12 +27,12 @@ const upload = multer({
   }
 });
 
-// Ensure outputs directory exists
+// Ensure tmp directory exists (no-op on Vercel, but useful for local dev)
 async function ensureOutputsDir() {
   try {
-    await fs.access('outputs');
+    await fs.access('/tmp');
   } catch {
-    await fs.mkdir('outputs', { recursive: true });
+    await fs.mkdir('/tmp', { recursive: true });
   }
 }
 
@@ -174,7 +174,7 @@ router.post('/api/generate_basic_data_questions', upload.single('pdf'), async (r
 router.get('/api/download_questions/:sessionId', async (req, res) => {
   try {
     const { sessionId } = req.params;
-    const filePath = path.join('outputs', `banker_questions_${sessionId}.pdf`);
+    const filePath = path.join('/tmp', `banker_questions_${sessionId}.pdf`);
 
     // Check if file exists
     await fs.access(filePath);
@@ -446,7 +446,7 @@ async function generateQuestionsPDF(analysis, sessionId) {
   await ensureOutputsDir();
 
   const doc = new PDFDocument({ margin: 50 });
-  const filePath = path.join('outputs', `banker_questions_${sessionId}.pdf`);
+  const filePath = path.join('/tmp', `banker_questions_${sessionId}.pdf`);
 
   doc.pipe(fsSync.createWriteStream(filePath));
 
@@ -473,7 +473,7 @@ async function generateDataRequestPDF(analysis, sessionId) {
   await ensureOutputsDir();
 
   const doc = new PDFDocument({ margin: 50 });
-  const filePath = path.join('outputs', `banker_questions_${sessionId}.pdf`);
+  const filePath = path.join('/tmp', `banker_questions_${sessionId}.pdf`);
 
   doc.pipe(fsSync.createWriteStream(filePath));
 

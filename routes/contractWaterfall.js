@@ -17,7 +17,7 @@ if (!ANTHROPIC_API_KEY) {
 
 // Configure multer for multiple file uploads
 const upload = multer({
-  dest: 'uploads/',
+  dest: '/tmp/',
   limits: {
     fileSize: 32 * 1024 * 1024, // 32MB per file
     files: 20 // Maximum 20 files
@@ -488,7 +488,7 @@ async function generateExcelFile(results, metrics, analysisId) {
   XLSX.utils.book_append_sheet(wb, wsSummary, 'Summary');
 
   // Save file
-  const outputDir = path.join('outputs');
+  const outputDir = path.join('/tmp');
   await fs.mkdir(outputDir, { recursive: true });
 
   const outputPath = path.join(outputDir, `contract_waterfall_${analysisId}.xlsx`);
