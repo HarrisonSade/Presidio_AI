@@ -9,7 +9,7 @@ const path = require('path');
 const pdfParse = require('pdf-parse');
 
 // API Key configuration
-const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
+const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY || "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";
 
 // Configure multer for file uploads
 const upload = multer({
@@ -262,8 +262,8 @@ Generate insightful, specific questions that would help assess the investment op
     const response = await axios.post(
       'https://api.anthropic.com/v1/messages',
       {
-        model: 'claude-3-opus-20240229',
-        max_tokens: 4000,
+        model: 'claude-3-5-sonnet-20241022',
+        max_tokens: 2500,
         messages: [{
           role: 'user',
           content: `${prompt}\n\nDocument content:\n${content.text}`
@@ -392,8 +392,8 @@ Focus on specific documents, data exports, and reports. Avoid analytical questio
     const response = await axios.post(
       'https://api.anthropic.com/v1/messages',
       {
-        model: 'claude-3-opus-20240229',
-        max_tokens: 4000,
+        model: 'claude-3-5-sonnet-20241022',
+        max_tokens: 2500,
         messages: [{
           role: 'user',
           content: `${prompt}\n\nDocument content:\n${content.text}`

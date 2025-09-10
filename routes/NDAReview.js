@@ -7,6 +7,12 @@ const pdfParse = require('pdf-parse');
 
 // API Key configuration
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
+<<<<<<< HEAD
+=======
+if (!ANTHROPIC_API_KEY) {
+  throw new Error('ANTHROPIC_API_KEY environment variable is required');
+}
+>>>>>>> 7ce945854c0a69970340796badd3201da9601a8e
 
 // Configure multer for file uploads
 const upload = multer({
@@ -156,8 +162,8 @@ Return JSON with this EXACT structure:
     const response = await axios.post(
       'https://api.anthropic.com/v1/messages',
       {
-        model: 'claude-3-opus-20240229',
-        max_tokens: 4000,
+        model: 'claude-3-5-sonnet-20241022',
+        max_tokens: 2500,
         messages: [{
           role: 'user',
           content: `${prompt}\n\nDocument content:\n${documentText}`

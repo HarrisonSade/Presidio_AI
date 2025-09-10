@@ -65,6 +65,9 @@ router.post('/generate', upload.single('pdf'), async (req, res) => {
 
     // API Key
     const apiKey = process.env.ANTHROPIC_API_KEY;
+    if (!apiKey) {
+      throw new Error('ANTHROPIC_API_KEY environment variable is required');
+    }
 
     // Create prompt that will accompany the PDF
     const prompt = `You are a PE analyst creating a factual summary of an investment opportunity from a CIM. Provide objective information only - no opinions, recommendations, or subjective assessments.
@@ -174,7 +177,7 @@ Focus on factual summarization only. Do not provide investment opinions, recomme
     const response = await axios.post(
       "https://api.anthropic.com/v1/messages",
       {
-        model: "claude-3-opus-20240229",
+        model: "claude-3-5-sonnet-20241022",
         max_tokens: 2500,
         messages: [{
           role: "user",

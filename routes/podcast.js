@@ -7,10 +7,20 @@ const FormData = require('form-data');
 const axios = require('axios');
 const pdfParse = require('pdf-parse');
 
-// API Keys - use environment variables or fallback to hardcoded
-const DEEPL_API_KEY = process.env.DEEPL_API_KEY || "aa20d81d-9606-4910-8e58-4c7f957c48dc";
-const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY || "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";
-const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY || "sk_a63e3349ffbd6bd0f13ead72d06799050b08eb38eceed0f6";
+// API Keys - use environment variables
+const DEEPL_API_KEY = process.env.DEEPL_API_KEY;
+const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
+const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;
+
+if (!DEEPL_API_KEY) {
+  throw new Error('DEEPL_API_KEY environment variable is required');
+}
+if (!ANTHROPIC_API_KEY) {
+  throw new Error('ANTHROPIC_API_KEY environment variable is required');
+}
+if (!ELEVENLABS_API_KEY) {
+  throw new Error('ELEVENLABS_API_KEY environment variable is required');
+}
 
 // Configure multer for file uploads
 const upload = multer({
@@ -275,8 +285,8 @@ ${documentText}`;
     const response = await axios.post(
       'https://api.anthropic.com/v1/messages',
       {
-        model: 'claude-3-opus-20240229',
-        max_tokens: 4000,
+        model: 'claude-3-5-sonnet-20241022',
+        max_tokens: 2500,
         messages: [{
           role: 'user',
           content: prompt

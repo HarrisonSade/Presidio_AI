@@ -55,6 +55,9 @@ router.post("/api/generate", async (req, res) => {
 
   // Use API key from environment variable
   const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) {
+    throw new Error('ANTHROPIC_API_KEY environment variable is required');
+  }
 
   // Your exact prompt - EDIT THIS TO CHANGE WHAT CLAUDE SAYS
   const prompt = `You are an elite investment researcher with web search capabilities. Your job is to find REAL, ACCURATE information and create comprehensive meeting intelligence. Do not include sources or citations at all, until a section at the very end.
@@ -123,8 +126,8 @@ Start searching NOW and build from facts to insights.`;
     const response = await axios.post(
       "https://api.anthropic.com/v1/messages",
       {
-        model: "claude-3-opus-20240229",
-        max_tokens: 2500,
+        model: "claude-3-5-sonnet-20241022",
+        max_tokens: 2000,
         messages: [{
           role: "user",
           content: prompt
